@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor Undangan - WedInvite</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#0f0f23; --navy-light:#1a1a3e; --gold:#c9a96e; --gold-light:#e8d5b0; --cream:#faf7f2; --white:#fff; --gray:#8a8a9a; --gray-light:#e8e8ee; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy); }
+
+.wi-sidebar { background:var(--navy); padding:30px 0; position:fixed; width:260px; height:100vh; overflow-y:auto; z-index:100; }
+.wi-sidebar-brand { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--white); padding:0 30px 30px; border-bottom:1px solid rgba(255,255,255,.05); margin-bottom:20px; text-decoration:none; display:block; }
+.wi-sidebar-brand span { color:var(--gold); }
+.wi-sidebar-menu { list-style:none; padding:0 20px; }
+.wi-sidebar-menu li { margin-bottom:4px; }
+.wi-sidebar-menu a { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; color:rgba(255,255,255,.6); text-decoration:none; font-size:14px; font-weight:500; transition:all .3s; }
+.wi-sidebar-menu a:hover, .wi-sidebar-menu a.active { background:rgba(201,169,110,.15); color:var(--gold); }
+.wi-sidebar-menu a.active { border-left:3px solid var(--gold); }
+.wi-sidebar-icon { width:20px; text-align:center; font-size:16px; }
+.wi-sidebar-divider { margin:20px; height:1px; background:rgba(255,255,255,.05); }
+.wi-sidebar-user { padding:20px; margin-top:auto; border-top:1px solid rgba(255,255,255,.05); display:flex; align-items:center; gap:12px; }
+.wi-sidebar-avatar { width:40px; height:40px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--navy); font-weight:600; }
+.wi-sidebar-user-name { font-size:14px; font-weight:600; color:var(--white); }
+.wi-sidebar-user-plan { font-size:11px; color:var(--gold); letter-spacing:.5px; }
+
+.wi-main { margin-left:260px; background:var(--cream); min-height:100vh; }
+.wi-topbar { background:var(--white); padding:16px 40px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-light); position:sticky; top:0; z-index:50; }
+.wi-topbar-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:600; color:var(--navy); }
+.wi-topbar-actions { display:flex; align-items:center; gap:16px; }
+.wi-topbar-btn { padding:10px 20px; background:var(--gold); color:var(--navy); border:none; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; transition:all .3s; font-family:'Inter',sans-serif; display:flex; align-items:center; gap:6px; text-decoration:none; }
+.wi-topbar-btn:hover { background:var(--gold-light); transform:translateY(-2px); }
+
+.wi-editor-layout { display:grid; grid-template-columns:320px 1fr 320px; gap:0; height:calc(100vh - 73px); }
+.wi-editor-sidebar { background:var(--white); border-right:1px solid var(--gray-light); padding:24px; overflow-y:auto; }
+.wi-editor-section-title { font-size:12px; font-weight:700; color:var(--gray); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
+.wi-editor-nav { display:flex; flex-direction:column; gap:4px; margin-bottom:24px; }
+.wi-editor-nav-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; font-size:13px; font-weight:500; color:var(--navy); cursor:pointer; transition:all .2s; border:none; background:transparent; width:100%; text-align:left; font-family:'Inter',sans-serif; }
+.wi-editor-nav-item:hover, .wi-editor-nav-item.active { background:var(--cream); }
+.wi-editor-nav-item.active { color:var(--gold); font-weight:600; }
+.wi-editor-preview { background:var(--navy); display:flex; align-items:center; justify-content:center; padding:40px; position:relative; }
+.wi-editor-phone { width:280px; height:560px; background:var(--navy-light); border-radius:36px; border:6px solid rgba(255,255,255,.08); box-shadow:0 30px 60px rgba(0,0,0,.4); overflow:hidden; }
+.wi-editor-phone-screen { width:100%; height:100%; background:var(--cream); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; }
+.wi-editor-toolbar { background:var(--white); border-left:1px solid var(--gray-light); padding:24px; overflow-y:auto; }
+
+.wi-form-group { margin-bottom:20px; }
+.wi-form-label { display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:8px; letter-spacing:.3px; }
+.wi-form-input { width:100%; padding:12px 14px; border:2px solid var(--gray-light); border-radius:10px; font-size:13px; font-family:'Inter',sans-serif; color:var(--navy); transition:all .3s; background:var(--white); }
+.wi-form-input:focus { outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,169,110,.1); }
+.wi-form-input::placeholder { color:#bbb; }
+.wi-color-picker { display:flex; gap:8px; flex-wrap:wrap; }
+.wi-color-swatch { width:32px; height:32px; border-radius:8px; cursor:pointer; border:3px solid transparent; transition:all .2s; }
+.wi-color-swatch:hover { transform:scale(1.1); }
+.wi-color-swatch.active { border-color:var(--navy); }
+.wi-font-select { display:flex; flex-direction:column; gap:8px; }
+.wi-font-option { padding:12px 14px; border:2px solid var(--gray-light); border-radius:10px; cursor:pointer; transition:all .2s; font-size:14px; background:var(--white); }
+.wi-font-option:hover { border-color:var(--gold); }
+.wi-font-option.active { border-color:var(--gold); background:rgba(201,169,110,.05); }
+.wi-btn-save { width:100%; padding:14px; background:var(--navy); color:var(--white); border:none; border-radius:10px; font-size:13px; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all .3s; font-family:'Inter',sans-serif; }
+.wi-btn-save:hover { background:var(--gold); color:var(--navy); }
+
+@media (max-width:1200px) { .wi-editor-layout { grid-template-columns:280px 1fr; } .wi-editor-toolbar { display:none; } }
+@media (max-width:1024px) { .wi-sidebar { display:none; } .wi-main { margin-left:0; } .wi-editor-layout { grid-template-columns:1fr; } .wi-editor-sidebar { display:none; } }
+</style>
+</head>
+<body>
+<aside class="wi-sidebar">
+  <a href="index.html" class="wi-sidebar-brand">Wed<span>Invite</span></a>
+  <ul class="wi-sidebar-menu">
+    <li><a href="dashboard.html"><span class="wi-sidebar-icon">📊</span> Dashboard</a></li>
+    <li><a href="editor.html" class="active"><span class="wi-sidebar-icon">📋</span> Undangan Saya</a></li>
+    <li><a href="editor.html"><span class="wi-sidebar-icon">➕</span> Buat Undangan Baru</a></li>
+    <li><a href="#"><span class="wi-sidebar-icon">👥</span> Daftar Tamu</a></li>
+    <li><a href="#"><span class="wi-sidebar-icon">✅</span> RSVP & Kehadiran</a></li>
+  </ul>
+  <div class="wi-sidebar-divider"></div>
+  <ul class="wi-sidebar-menu">
+    <li><a href="settings.html"><span class="wi-sidebar-icon">⚙️</span> Pengaturan</a></li>
+    <li><a href="subscription.html"><span class="wi-sidebar-icon">💳</span> Langganan</a></li>
+    <li><a href="help.html"><span class="wi-sidebar-icon">❓</span> Bantuan</a></li>
+  </ul>
+  <div class="wi-sidebar-user">
+    <div class="wi-sidebar-avatar">A</div>
+    <div><div class="wi-sidebar-user-name">Arya Wijaya</div><div class="wi-sidebar-user-plan">Paket Premium</div></div>
+  </div>
+</aside>
+
+<div class="wi-main">
+  <div class="wi-topbar">
+    <h1 class="wi-topbar-title">Editor Undangan</h1>
+    <div class="wi-topbar-actions">
+      <a href="invitation.html" class="wi-topbar-btn" style="background:var(--cream);color:var(--navy);border:1.5px solid var(--gray-light);">👁️ Preview</a>
+      <a href="invitation.html" class="wi-topbar-btn">🚀 Publish</a>
+    </div>
+  </div>
+
+  <div class="wi-editor-layout">
+    <div class="wi-editor-sidebar">
+      <div class="wi-editor-section-title">Bagian Undangan</div>
+      <div class="wi-editor-nav">
+        <button class="wi-editor-nav-item active">🏠 Cover & Hero</button>
+        <button class="wi-editor-nav-item">💑 Profil Mempelai</button>
+        <button class="wi-editor-nav-item">📅 Detail Acara</button>
+        <button class="wi-editor-nav-item">📸 Galeri Foto</button>
+        <button class="wi-editor-nav-item">💬 Ucapan & Doa</button>
+        <button class="wi-editor-nav-item">🎁 Amplop Digital</button>
+        <button class="wi-editor-nav-item">🎵 Musik & Video</button>
+        <button class="wi-editor-nav-item">📍 Lokasi & Peta</button>
+        <button class="wi-editor-nav-item">⏱️ Countdown</button>
+        <button class="wi-editor-nav-item">📋 RSVP Form</button>
+      </div>
+      <div class="wi-editor-section-title">Aksi</div>
+      <button class="wi-btn-save" style="margin-bottom:10px;" onclick="alert('Perubahan berhasil disimpan!')">💾 Simpan Perubahan</button>
+      <button class="wi-btn-save" style="background:var(--cream);color:var(--navy);border:2px solid var(--gray-light);" onclick="window.location.href='invitation.html'">👁️ Preview</button>
+    </div>
+
+    <div class="wi-editor-preview">
+      <div class="wi-editor-phone">
+        <div class="wi-editor-phone-screen">
+          <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:15px;">The Wedding of</div>
+          <div style="font-size:28px;margin:10px 0;">💑</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);">Arya</div>
+          <div style="font-family:'Playfair Display',serif;font-style:italic;color:var(--gold);font-size:18px;margin:4px 0;">&</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);">Dewi</div>
+          <div style="font-size:10px;color:var(--gray);letter-spacing:2px;margin-top:15px;">15 Agustus 2026</div>
+          <div style="background:var(--navy);color:var(--white);padding:10px 24px;border-radius:20px;font-size:11px;letter-spacing:1px;margin-top:20px;">Buka Undangan</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wi-editor-toolbar">
+      <div class="wi-editor-section-title">Properti</div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Judul Undangan</label>
+        <input type="text" class="wi-form-input" value="Arya & Dewi Wedding">
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Nama Mempelai Pria</label>
+        <input type="text" class="wi-form-input" value="Arya Wijaya">
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Nama Mempelai Wanita</label>
+        <input type="text" class="wi-form-input" value="Dewi Lestari">
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Tanggal Pernikahan</label>
+        <input type="date" class="wi-form-input" value="2026-08-15">
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Warna Tema</label>
+        <div class="wi-color-picker">
+          <div class="wi-color-swatch active" style="background:#0f0f23;"></div>
+          <div class="wi-color-swatch" style="background:#c9a96e;"></div>
+          <div class="wi-color-swatch" style="background:#c44569;"></div>
+          <div class="wi-color-swatch" style="background:#2d5a4c;"></div>
+          <div class="wi-color-swatch" style="background:#4a4a6a;"></div>
+          <div class="wi-color-swatch" style="background:#8b4513;"></div>
+        </div>
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Font Heading</label>
+        <div class="wi-font-select">
+          <div class="wi-font-option active" style="font-family:'Playfair Display',serif;">Playfair Display</div>
+          <div class="wi-font-option" style="font-family:Georgia,serif;">Georgia</div>
+          <div class="wi-font-option" style="font-family:'Times New Roman',serif;">Times New Roman</div>
+        </div>
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Musik Background</label>
+        <input type="file" class="wi-form-input" accept="audio/*">
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">URL Custom (opsional)</label>
+        <input type="text" class="wi-form-input" placeholder="wedinvite.com/nama-pasangan">
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

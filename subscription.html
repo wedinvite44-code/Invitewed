@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Langganan - WedInvite</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#0f0f23; --gold:#c9a96e; --cream:#faf7f2; --white:#fff; --gray:#8a8a9a; --gray-light:#e8e8ee; --success:#22c55e; --error:#ef4444; --warning:#f59e0b; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy); -webkit-font-smoothing:antialiased; }
+
+/* Mobile Sidebar Overlay */
+.wi-sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:99; }
+.wi-sidebar-overlay.open { display:block; }
+
+.wi-sidebar { background:var(--navy); padding:20px 0; position:fixed; width:260px; height:100vh; overflow-y:auto; z-index:100; transform:translateX(-100%); transition:transform .3s ease; }
+.wi-sidebar.open { transform:translateX(0); }
+.wi-sidebar-brand { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--white); padding:0 24px 20px; border-bottom:1px solid rgba(255,255,255,.05); margin-bottom:16px; text-decoration:none; display:block; }
+.wi-sidebar-brand span { color:var(--gold); }
+.wi-sidebar-menu { list-style:none; padding:0 16px; }
+.wi-sidebar-menu li { margin-bottom:2px; }
+.wi-sidebar-menu a { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; color:rgba(255,255,255,.6); text-decoration:none; font-size:14px; font-weight:500; transition:all .3s; }
+.wi-sidebar-menu a:hover, .wi-sidebar-menu a.active { background:rgba(201,169,110,.15); color:var(--gold); }
+.wi-sidebar-menu a.active { border-left:3px solid var(--gold); }
+.wi-sidebar-icon { width:20px; text-align:center; font-size:16px; }
+.wi-sidebar-divider { margin:16px; height:1px; background:rgba(255,255,255,.05); }
+.wi-sidebar-user { padding:16px; margin-top:auto; border-top:1px solid rgba(255,255,255,.05); display:flex; align-items:center; gap:12px; }
+.wi-sidebar-avatar { width:40px; height:40px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--navy); font-weight:600; flex-shrink:0; }
+.wi-sidebar-user-name { font-size:14px; font-weight:600; color:var(--white); }
+.wi-sidebar-user-plan { font-size:11px; color:var(--gold); letter-spacing:.5px; }
+
+.wi-main { margin-left:0; background:var(--cream); min-height:100vh; }
+.wi-topbar { background:var(--white); padding:12px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-light); position:sticky; top:0; z-index:50; }
+.wi-topbar-left { display:flex; align-items:center; gap:12px; }
+.wi-menu-btn { width:40px; height:40px; border-radius:10px; background:var(--cream); border:none; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; transition:all .3s; }
+.wi-menu-btn:hover { background:var(--gray-light); }
+.wi-topbar-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--navy); }
+.wi-topbar-actions { display:flex; align-items:center; gap:10px; }
+.wi-topbar-notif { width:40px; height:40px; border-radius:10px; background:var(--cream); border:none; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; flex-shrink:0; }
+.wi-topbar-notif:hover { background:var(--gray-light); }
+.wi-topbar-notif-badge { position:absolute; top:-2px; right:-2px; width:18px; height:18px; background:var(--error); color:var(--white); border-radius:50%; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.wi-content { padding:16px; }
+
+/* Subscription Card */
+.wi-sub-card { background:var(--white); border-radius:20px; padding:20px; margin-bottom:16px; border:2px solid transparent; transition:all .3s; }
+.wi-sub-card:hover { box-shadow:0 10px 40px rgba(15,15,35,.06); border-color:rgba(201,169,110,.15); }
+.wi-sub-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; gap:10px; }
+.wi-sub-info { min-width:0; }
+.wi-sub-info h4 { font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--navy); margin-bottom:4px; }
+.wi-sub-info p { font-size:12px; color:var(--gray); }
+.wi-sub-badge { padding:5px 14px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; flex-shrink:0; }
+.wi-sub-badge.active { background:rgba(34,197,94,.1); color:var(--success); }
+.wi-sub-details { display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:16px; }
+.wi-sub-detail { background:var(--cream); border-radius:12px; padding:14px; }
+.wi-sub-detail-label { font-size:10px; color:var(--gray); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.wi-sub-detail-value { font-family:'Playfair Display',serif; font-size:16px; font-weight:600; color:var(--navy); }
+.wi-sub-actions { display:flex; flex-direction:column; gap:8px; }
+
+/* General Cards */
+.wi-card { background:var(--white); border-radius:20px; padding:20px; margin-bottom:16px; border:1px solid transparent; transition:all .3s; }
+.wi-card:hover { box-shadow:0 8px 30px rgba(15,15,35,.06); border-color:rgba(201,169,110,.15); }
+.wi-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:10px; }
+.wi-card-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:600; color:var(--navy); }
+.wi-card-action { font-size:12px; color:var(--gold); text-decoration:none; font-weight:600; white-space:nowrap; }
+
+/* Desktop Table */
+.wi-table-wrapper { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.wi-invoice-table { width:100%; border-collapse:collapse; min-width:600px; }
+.wi-invoice-table th { text-align:left; padding:12px 14px; font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:1px; border-bottom:2px solid var(--gray-light); }
+.wi-invoice-table td { padding:14px; font-size:13px; color:var(--navy); border-bottom:1px solid var(--gray-light); }
+.wi-invoice-table tr:hover td { background:var(--cream); }
+.wi-invoice-id { font-family:'Playfair Display',serif; font-weight:600; color:var(--navy); font-size:13px; }
+.wi-invoice-date { font-size:11px; color:var(--gray); }
+.wi-invoice-status { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:600; }
+.wi-invoice-status.paid { background:rgba(34,197,94,.1); color:var(--success); }
+.wi-invoice-status.pending { background:rgba(245,158,11,.1); color:var(--warning); }
+.wi-invoice-amount { font-weight:700; color:var(--navy); font-size:13px; }
+.wi-invoice-action { font-size:12px; color:var(--gold); text-decoration:none; font-weight:600; }
+
+/* Mobile Invoice Cards */
+.wi-invoice-cards { display:none; flex-direction:column; gap:10px; }
+.wi-invoice-card { background:var(--cream); border-radius:14px; padding:16px; }
+.wi-invoice-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.wi-invoice-card-id { font-family:'Playfair Display',serif; font-weight:600; font-size:14px; color:var(--navy); }
+.wi-invoice-card-date { font-size:11px; color:var(--gray); margin-top:2px; }
+.wi-invoice-card-body { display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px; color:var(--gray); }
+.wi-invoice-card-body span { color:var(--navy); font-weight:500; }
+
+/* Payment Method Cards */
+.wi-pay-list { display:flex; flex-direction:column; gap:10px; }
+.wi-pay-item { display:flex; align-items:center; gap:12px; padding:14px; background:var(--cream); border-radius:12px; border:2px solid transparent; }
+.wi-pay-item.primary { border-color:var(--gold); }
+.wi-pay-icon { width:44px; height:44px; border-radius:10px; background:var(--white); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.wi-pay-info { flex:1; min-width:0; }
+.wi-pay-name { font-size:14px; font-weight:600; color:var(--navy); }
+.wi-pay-desc { font-size:12px; color:var(--gray); }
+.wi-pay-badge { font-size:10px; color:var(--gold); font-weight:700; flex-shrink:0; }
+
+/* Buttons */
+.wi-btn-sm { padding:10px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all .3s; border:none; font-family:'Inter',sans-serif; text-align:center; text-decoration:none; display:inline-block; }
+.wi-btn-sm.primary { background:var(--navy); color:var(--white); }
+.wi-btn-sm.primary:hover { background:var(--gold); color:var(--navy); }
+.wi-btn-sm.ghost { background:transparent; color:var(--gray); border:1.5px solid var(--gray-light); }
+.wi-btn-sm.ghost:hover { border-color:var(--navy); color:var(--navy); }
+
+/* Desktop */
+@media (min-width:1024px) {
+  .wi-sidebar { transform:translateX(0); }
+  .wi-main { margin-left:260px; }
+  .wi-menu-btn { display:none; }
+  .wi-topbar { padding:16px 40px; }
+  .wi-topbar-title { font-size:22px; }
+  .wi-content { padding:30px 40px; }
+  .wi-sub-card { padding:32px; margin-bottom:24px; }
+  .wi-sub-info h4 { font-size:20px; }
+  .wi-sub-details { grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px; }
+  .wi-sub-detail { padding:16px; }
+  .wi-sub-detail-value { font-size:18px; }
+  .wi-sub-actions { flex-direction:row; gap:10px; }
+  .wi-card { padding:28px; margin-bottom:24px; }
+  .wi-card-title { font-size:18px; }
+  .wi-table-wrapper { overflow-x:visible; }
+  .wi-invoice-table { min-width:auto; }
+  .wi-invoice-table td { padding:18px 16px; }
+}
+
+@media (max-width:768px) {
+  .wi-table-wrapper { display:none; }
+  .wi-invoice-cards { display:flex; }
+}
+</style>
+</head>
+<body>
+<div class="wi-sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<aside class="wi-sidebar" id="sidebar">
+  <a href="index.html" class="wi-sidebar-brand">Wed<span>Invite</span></a>
+  <ul class="wi-sidebar-menu">
+    <li><a href="dashboard.html"><span class="wi-sidebar-icon">📊</span> Dashboard</a></li>
+    <li><a href="editor.html"><span class="wi-sidebar-icon">📋</span> Undangan Saya</a></li>
+    <li><a href="editor.html"><span class="wi-sidebar-icon">➕</span> Buat Undangan Baru</a></li>
+  </ul>
+  <div class="wi-sidebar-divider"></div>
+  <ul class="wi-sidebar-menu">
+    <li><a href="settings.html"><span class="wi-sidebar-icon">⚙️</span> Pengaturan</a></li>
+    <li><a href="subscription.html" class="active"><span class="wi-sidebar-icon">💳</span> Langganan</a></li>
+    <li><a href="help.html"><span class="wi-sidebar-icon">❓</span> Bantuan</a></li>
+  </ul>
+  <div class="wi-sidebar-user">
+    <div class="wi-sidebar-avatar">A</div>
+    <div><div class="wi-sidebar-user-name">Arya Wijaya</div><div class="wi-sidebar-user-plan">Paket Premium</div></div>
+  </div>
+</aside>
+
+<main class="wi-main">
+  <div class="wi-topbar">
+    <div class="wi-topbar-left">
+      <button class="wi-menu-btn" onclick="toggleSidebar()">☰</button>
+      <h1 class="wi-topbar-title">Langganan & Billing</h1>
+    </div>
+    <div class="wi-topbar-actions">
+      <button class="wi-topbar-notif">🔔<span class="wi-topbar-notif-badge">3</span></button>
+    </div>
+  </div>
+
+  <div class="wi-content">
+    <!-- Subscription Status Card -->
+    <div class="wi-sub-card">
+      <div class="wi-sub-header">
+        <div class="wi-sub-info">
+          <h4>Paket Premium</h4>
+          <p>Aktif sejak 15 Januari 2026</p>
+        </div>
+        <span class="wi-sub-badge active">● Aktif</span>
+      </div>
+      <div class="wi-sub-details">
+        <div class="wi-sub-detail"><div class="wi-sub-detail-label">Masa Aktif</div><div class="wi-sub-detail-value">Selamanya</div></div>
+        <div class="wi-sub-detail"><div class="wi-sub-detail-label">Undangan Aktif</div><div class="wi-sub-detail-value">2 / ∞</div></div>
+        <div class="wi-sub-detail"><div class="wi-sub-detail-label">Tamu</div><div class="wi-sub-detail-value">248 / ∞</div></div>
+      </div>
+      <div class="wi-sub-actions">
+        <a href="checkout.html" class="wi-btn-sm primary">Upgrade ke Exclusive</a>
+        <button class="wi-btn-sm ghost" onclick="alert('Fitur kelola paket akan segera hadir!')">Kelola Paket</button>
+      </div>
+    </div>
+
+    <!-- Invoice History Card -->
+    <div class="wi-card">
+      <div class="wi-card-header">
+        <h3 class="wi-card-title">Riwayat Pembayaran</h3>
+        <a href="#" class="wi-card-action" onclick="alert('Download semua invoice')">Download Semua →</a>
+      </div>
+      <!-- Desktop Table -->
+      <div class="wi-table-wrapper">
+        <table class="wi-invoice-table">
+          <thead><tr><th>Invoice</th><th>Tanggal</th><th>Paket</th><th>Status</th><th>Jumlah</th><th>Aksi</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="wi-invoice-id">#INV-2026-001</div><div class="wi-invoice-date">15 Jan 2026</div></td>
+              <td>15 Jan 2026</td><td>Paket Premium</td>
+              <td><span class="wi-invoice-status paid">● Lunas</span></td>
+              <td><span class="wi-invoice-amount">Rp149.000</span></td>
+              <td><a href="#" class="wi-invoice-action" onclick="alert('Download invoice #INV-2026-001')">Download</a></td>
+            </tr>
+            <tr>
+              <td><div class="wi-invoice-id">#INV-2026-002</div><div class="wi-invoice-date">20 Feb 2026</div></td>
+              <td>20 Feb 2026</td><td>Add-on: Custom Domain</td>
+              <td><span class="wi-invoice-status paid">● Lunas</span></td>
+              <td><span class="wi-invoice-amount">Rp49.000</span></td>
+              <td><a href="#" class="wi-invoice-action" onclick="alert('Download invoice #INV-2026-002')">Download</a></td>
+            </tr>
+            <tr>
+              <td><div class="wi-invoice-id">#INV-2026-003</div><div class="wi-invoice-date">10 Mar 2026</div></td>
+              <td>10 Mar 2026</td><td>Upgrade ke Exclusive</td>
+              <td><span class="wi-invoice-status pending">⏳ Menunggu</span></td>
+              <td><span class="wi-invoice-amount">Rp150.000</span></td>
+              <td><a href="checkout.html" class="wi-invoice-action">Bayar</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Mobile Invoice Cards -->
+      <div class="wi-invoice-cards">
+        <div class="wi-invoice-card">
+          <div class="wi-invoice-card-header">
+            <div>
+              <div class="wi-invoice-card-id">#INV-2026-001</div>
+              <div class="wi-invoice-card-date">15 Jan 2026</div>
+            </div>
+            <span class="wi-invoice-status paid">● Lunas</span>
+          </div>
+          <div class="wi-invoice-card-body">
+            <div>Paket: <span>Premium</span></div>
+            <div>Jumlah: <span>Rp149.000</span></div>
+            <div style="grid-column:span 2;"><a href="#" class="wi-invoice-action" onclick="alert('Download invoice #INV-2026-001')">Download →</a></div>
+          </div>
+        </div>
+        <div class="wi-invoice-card">
+          <div class="wi-invoice-card-header">
+            <div>
+              <div class="wi-invoice-card-id">#INV-2026-002</div>
+              <div class="wi-invoice-card-date">20 Feb 2026</div>
+            </div>
+            <span class="wi-invoice-status paid">● Lunas</span>
+          </div>
+          <div class="wi-invoice-card-body">
+            <div>Paket: <span>Custom Domain</span></div>
+            <div>Jumlah: <span>Rp49.000</span></div>
+            <div style="grid-column:span 2;"><a href="#" class="wi-invoice-action" onclick="alert('Download invoice #INV-2026-002')">Download →</a></div>
+          </div>
+        </div>
+        <div class="wi-invoice-card">
+          <div class="wi-invoice-card-header">
+            <div>
+              <div class="wi-invoice-card-id">#INV-2026-003</div>
+              <div class="wi-invoice-card-date">10 Mar 2026</div>
+            </div>
+            <span class="wi-invoice-status pending">⏳ Menunggu</span>
+          </div>
+          <div class="wi-invoice-card-body">
+            <div>Paket: <span>Upgrade Exclusive</span></div>
+            <div>Jumlah: <span>Rp150.000</span></div>
+            <div style="grid-column:span 2;"><a href="checkout.html" class="wi-invoice-action">Bayar Sekarang →</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Methods Card -->
+    <div class="wi-card">
+      <div class="wi-card-header">
+        <h3 class="wi-card-title">Metode Pembayaran</h3>
+        <a href="#" class="wi-card-action" onclick="alert('Fitur tambah metode pembayaran akan segera hadir!')">+ Tambah Baru</a>
+      </div>
+      <div class="wi-pay-list">
+        <div class="wi-pay-item primary">
+          <div class="wi-pay-icon">🏦</div>
+          <div class="wi-pay-info">
+            <div class="wi-pay-name">Bank BCA</div>
+            <div class="wi-pay-desc">**** 9012 · Arya Wijaya</div>
+          </div>
+          <span class="wi-pay-badge">UTAMA</span>
+        </div>
+        <div class="wi-pay-item">
+          <div class="wi-pay-icon">💳</div>
+          <div class="wi-pay-info">
+            <div class="wi-pay-name">Visa</div>
+            <div class="wi-pay-desc">**** 4567 · Exp 12/28</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+</script>
+</body>
+</html>

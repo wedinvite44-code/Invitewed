@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dashboard - WedInvite</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#0f0f23; --navy-light:#1a1a3e; --gold:#c9a96e; --gold-light:#e8d5b0; --cream:#faf7f2; --white:#fff; --gray:#8a8a9a; --gray-light:#e8e8ee; --success:#22c55e; --error:#ef4444; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy); -webkit-font-smoothing:antialiased; }
+
+/* Mobile Sidebar Overlay */
+.wi-sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:99; }
+.wi-sidebar-overlay.open { display:block; }
+
+.wi-sidebar { background:var(--navy); padding:20px 0; position:fixed; width:260px; height:100vh; overflow-y:auto; z-index:100; transform:translateX(-100%); transition:transform .3s ease; }
+.wi-sidebar.open { transform:translateX(0); }
+.wi-sidebar-brand { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--white); padding:0 24px 20px; border-bottom:1px solid rgba(255,255,255,.05); margin-bottom:16px; text-decoration:none; display:block; }
+.wi-sidebar-brand span { color:var(--gold); }
+.wi-sidebar-menu { list-style:none; padding:0 16px; }
+.wi-sidebar-menu li { margin-bottom:2px; }
+.wi-sidebar-menu a { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; color:rgba(255,255,255,.6); text-decoration:none; font-size:14px; font-weight:500; transition:all .3s; }
+.wi-sidebar-menu a:hover, .wi-sidebar-menu a.active { background:rgba(201,169,110,.15); color:var(--gold); }
+.wi-sidebar-menu a.active { border-left:3px solid var(--gold); }
+.wi-sidebar-icon { width:20px; text-align:center; font-size:16px; }
+.wi-sidebar-divider { margin:16px; height:1px; background:rgba(255,255,255,.05); }
+.wi-sidebar-user { padding:16px; margin-top:auto; border-top:1px solid rgba(255,255,255,.05); display:flex; align-items:center; gap:12px; }
+.wi-sidebar-avatar { width:40px; height:40px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--navy); font-weight:600; flex-shrink:0; }
+.wi-sidebar-user-name { font-size:14px; font-weight:600; color:var(--white); }
+.wi-sidebar-user-plan { font-size:11px; color:var(--gold); letter-spacing:.5px; }
+
+.wi-main { margin-left:0; background:var(--cream); min-height:100vh; }
+.wi-topbar { background:var(--white); padding:12px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-light); position:sticky; top:0; z-index:50; }
+.wi-topbar-left { display:flex; align-items:center; gap:12px; }
+.wi-menu-btn { width:40px; height:40px; border-radius:10px; background:var(--cream); border:none; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; transition:all .3s; }
+.wi-menu-btn:hover { background:var(--gray-light); }
+.wi-topbar-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--navy); }
+.wi-topbar-actions { display:flex; align-items:center; gap:10px; }
+.wi-topbar-btn { padding:10px 16px; background:var(--gold); color:var(--navy); border:none; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; transition:all .3s; font-family:'Inter',sans-serif; display:flex; align-items:center; gap:4px; text-decoration:none; white-space:nowrap; }
+.wi-topbar-btn:hover { background:var(--gold-light); transform:translateY(-2px); }
+.wi-topbar-notif { width:40px; height:40px; border-radius:10px; background:var(--cream); border:none; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; flex-shrink:0; }
+.wi-topbar-notif:hover { background:var(--gray-light); }
+.wi-topbar-notif-badge { position:absolute; top:-2px; right:-2px; width:18px; height:18px; background:var(--error); color:var(--white); border-radius:50%; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.wi-content { padding:16px; }
+
+/* Stats */
+.wi-stats-row { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px; }
+.wi-stat-box { background:var(--white); border-radius:16px; padding:16px; transition:all .3s; border:1px solid transparent; }
+.wi-stat-box:hover { box-shadow:0 8px 30px rgba(15,15,35,.06); border-color:rgba(201,169,110,.2); transform:translateY(-2px); }
+.wi-stat-box-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.wi-stat-box-label { font-size:11px; color:var(--gray); font-weight:500; }
+.wi-stat-box-icon { width:36px; height:36px; border-radius:10px; background:var(--cream); display:flex; align-items:center; justify-content:center; font-size:16px; }
+.wi-stat-box-value { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.wi-stat-box-change { font-size:11px; font-weight:600; }
+.wi-stat-box-change.up { color:var(--success); }
+
+/* Cards */
+.wi-card { background:var(--white); border-radius:20px; padding:20px; margin-bottom:16px; border:1px solid transparent; transition:all .3s; }
+.wi-card:hover { box-shadow:0 8px 30px rgba(15,15,35,.06); border-color:rgba(201,169,110,.15); }
+.wi-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.wi-card-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:600; color:var(--navy); }
+.wi-card-action { font-size:12px; color:var(--gold); text-decoration:none; font-weight:600; transition:opacity .3s; white-space:nowrap; }
+.wi-card-action:hover { opacity:.7; }
+
+/* Invitations */
+.wi-invitation-list { display:flex; flex-direction:column; gap:10px; }
+.wi-invitation-item { display:flex; align-items:center; gap:12px; padding:14px; border-radius:14px; background:var(--cream); transition:all .3s; cursor:pointer; text-decoration:none; }
+.wi-invitation-item:hover { background:rgba(201,169,110,.08); transform:translateX(2px); }
+.wi-invitation-thumb { width:48px; height:48px; border-radius:12px; background:var(--navy); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.wi-invitation-info { flex:1; min-width:0; }
+.wi-invitation-name { font-size:14px; font-weight:600; color:var(--navy); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.wi-invitation-meta { font-size:11px; color:var(--gray); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.wi-invitation-status { padding:5px 12px; border-radius:20px; font-size:10px; font-weight:600; letter-spacing:.5px; flex-shrink:0; }
+.wi-invitation-status.published { background:rgba(34,197,94,.1); color:var(--success); }
+.wi-invitation-status.draft { background:rgba(138,138,154,.1); color:var(--gray); }
+
+/* Table - Mobile Cards */
+.wi-table-wrapper { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.wi-table { width:100%; border-collapse:collapse; min-width:600px; }
+.wi-table th { text-align:left; padding:12px 14px; font-size:11px; font-weight:600; color:var(--gray); text-transform:uppercase; letter-spacing:1px; border-bottom:2px solid var(--gray-light); }
+.wi-table td { padding:14px; font-size:13px; color:var(--navy); border-bottom:1px solid var(--gray-light); }
+.wi-table tr:hover td { background:var(--cream); }
+.wi-guest-name { font-weight:600; color:var(--navy); font-size:13px; }
+.wi-guest-email { font-size:11px; color:var(--gray); }
+.wi-guest-status { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:600; }
+.wi-guest-status.confirmed { background:rgba(34,197,94,.1); color:var(--success); }
+.wi-guest-status.pending { background:rgba(234,179,8,.1); color:#ea580c; }
+.wi-guest-status.declined { background:rgba(239,68,68,.1); color:var(--error); }
+.wi-guest-pax { font-size:12px; color:var(--gray); font-weight:500; }
+.wi-guest-message { font-size:12px; color:var(--gray); max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* Mobile RSVP Cards (alternative to table) */
+.wi-rsvp-cards { display:none; flex-direction:column; gap:12px; }
+.wi-rsvp-card { background:var(--cream); border-radius:14px; padding:16px; }
+.wi-rsvp-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.wi-rsvp-card-name { font-weight:600; font-size:14px; color:var(--navy); }
+.wi-rsvp-card-email { font-size:11px; color:var(--gray); margin-top:2px; }
+.wi-rsvp-card-body { display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px; color:var(--gray); }
+.wi-rsvp-card-body span { color:var(--navy); font-weight:500; }
+
+/* Desktop */
+@media (min-width:1024px) {
+  .wi-sidebar { transform:translateX(0); }
+  .wi-main { margin-left:260px; }
+  .wi-menu-btn { display:none; }
+  .wi-topbar { padding:16px 40px; }
+  .wi-topbar-title { font-size:22px; }
+  .wi-topbar-btn { padding:10px 20px; font-size:13px; }
+  .wi-content { padding:30px 40px; }
+  .wi-stats-row { grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:30px; }
+  .wi-stat-box { padding:24px; }
+  .wi-stat-box-value { font-size:28px; }
+  .wi-card { padding:28px; margin-bottom:24px; }
+  .wi-card-title { font-size:18px; }
+  .wi-invitation-thumb { width:56px; height:56px; font-size:22px; }
+  .wi-invitation-name { font-size:15px; }
+  .wi-invitation-meta { font-size:12px; }
+  .wi-table-wrapper { overflow-x:visible; }
+  .wi-table { min-width:auto; }
+}
+
+@media (max-width:768px) {
+  .wi-stats-row { grid-template-columns:1fr; }
+  .wi-topbar-btn span { display:none; }
+  .wi-table-wrapper { display:none; }
+  .wi-rsvp-cards { display:flex; }
+}
+</style>
+</head>
+<body>
+<div class="wi-sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<aside class="wi-sidebar" id="sidebar">
+  <a href="index.html" class="wi-sidebar-brand">Wed<span>Invite</span></a>
+  <ul class="wi-sidebar-menu">
+    <li><a href="dashboard.html" class="active"><span class="wi-sidebar-icon">📊</span> Dashboard</a></li>
+    <li><a href="editor.html"><span class="wi-sidebar-icon">📋</span> Undangan Saya</a></li>
+    <li><a href="editor.html"><span class="wi-sidebar-icon">➕</span> Buat Undangan Baru</a></li>
+    <li><a href="#"><span class="wi-sidebar-icon">👥</span> Daftar Tamu</a></li>
+    <li><a href="#"><span class="wi-sidebar-icon">✅</span> RSVP & Kehadiran</a></li>
+    <li><a href="#"><span class="wi-sidebar-icon">🎁</span> Amplop Digital</a></li>
+    <li><a href="#"><span class="wi-sidebar-icon">📸</span> Galeri Foto</a></li>
+    <li><a href="#"><span class="wi-sidebar-icon">📈</span> Statistik</a></li>
+  </ul>
+  <div class="wi-sidebar-divider"></div>
+  <ul class="wi-sidebar-menu">
+    <li><a href="settings.html"><span class="wi-sidebar-icon">⚙️</span> Pengaturan</a></li>
+    <li><a href="subscription.html"><span class="wi-sidebar-icon">💳</span> Langganan</a></li>
+    <li><a href="help.html"><span class="wi-sidebar-icon">❓</span> Bantuan</a></li>
+  </ul>
+  <div class="wi-sidebar-user">
+    <div class="wi-sidebar-avatar">A</div>
+    <div>
+      <div class="wi-sidebar-user-name">Arya Wijaya</div>
+      <div class="wi-sidebar-user-plan">Paket Premium</div>
+    </div>
+  </div>
+</aside>
+
+<main class="wi-main">
+  <div class="wi-topbar">
+    <div class="wi-topbar-left">
+      <button class="wi-menu-btn" onclick="toggleSidebar()">☰</button>
+      <h1 class="wi-topbar-title">Dashboard</h1>
+    </div>
+    <div class="wi-topbar-actions">
+      <button class="wi-topbar-notif">🔔<span class="wi-topbar-notif-badge">3</span></button>
+      <a href="checkout.html" class="wi-topbar-btn"><span>➕</span> Buat Undangan</a>
+    </div>
+  </div>
+
+  <div class="wi-content">
+    <div class="wi-stats-row">
+      <div class="wi-stat-box">
+        <div class="wi-stat-box-header">
+          <span class="wi-stat-box-label">Total Tamu Diundang</span>
+          <div class="wi-stat-box-icon">👥</div>
+        </div>
+        <div class="wi-stat-box-value">248</div>
+        <div class="wi-stat-box-change up">↑ 12% dari minggu lalu</div>
+      </div>
+      <div class="wi-stat-box">
+        <div class="wi-stat-box-header">
+          <span class="wi-stat-box-label">Konfirmasi Hadir</span>
+          <div class="wi-stat-box-icon">✅</div>
+        </div>
+        <div class="wi-stat-box-value">186</div>
+        <div class="wi-stat-box-change up">↑ 8% dari minggu lalu</div>
+      </div>
+      <div class="wi-stat-box">
+        <div class="wi-stat-box-header">
+          <span class="wi-stat-box-label">Ucapan & Doa</span>
+          <div class="wi-stat-box-icon">💬</div>
+        </div>
+        <div class="wi-stat-box-value">94</div>
+        <div class="wi-stat-box-change up">↑ 24% dari minggu lalu</div>
+      </div>
+      <div class="wi-stat-box">
+        <div class="wi-stat-box-header">
+          <span class="wi-stat-box-label">Amplop Digital</span>
+          <div class="wi-stat-box-icon">🎁</div>
+        </div>
+        <div class="wi-stat-box-value">Rp 4.2jt</div>
+        <div class="wi-stat-box-change up">↑ 15% dari minggu lalu</div>
+      </div>
+    </div>
+
+    <div class="wi-card">
+      <div class="wi-card-header">
+        <h3 class="wi-card-title">Undangan Saya</h3>
+        <a href="editor.html" class="wi-card-action">Lihat Semua →</a>
+      </div>
+      <div class="wi-invitation-list">
+        <a href="invitation.html" class="wi-invitation-item">
+          <div class="wi-invitation-thumb">💍</div>
+          <div class="wi-invitation-info">
+            <div class="wi-invitation-name">Arya & Dewi Wedding</div>
+            <div class="wi-invitation-meta">Template Royal Navy · 15 Agustus 2026 · 248 tamu</div>
+          </div>
+          <span class="wi-invitation-status published">PUBLISH</span>
+        </a>
+        <a href="editor.html" class="wi-invitation-item">
+          <div class="wi-invitation-thumb" style="background:#c44569;">💕</div>
+          <div class="wi-invitation-info">
+            <div class="wi-invitation-name">Budi & Sari - Engagement</div>
+            <div class="wi-invitation-meta">Template Blush Romance · 20 September 2026 · 120 tamu</div>
+          </div>
+          <span class="wi-invitation-status draft">DRAFT</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="wi-card">
+      <div class="wi-card-header">
+        <h3 class="wi-card-title">RSVP Terbaru</h3>
+        <a href="#" class="wi-card-action">Kelola Tamu →</a>
+      </div>
+      <!-- Desktop Table -->
+      <div class="wi-table-wrapper">
+        <table class="wi-table">
+          <thead><tr><th>Tamu</th><th>Status</th><th>Jumlah</th><th>Ucapan</th><th>Waktu</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="wi-guest-name">Rina Susanti</div><div class="wi-guest-email">rina.s@gmail.com</div></td>
+              <td><span class="wi-guest-status confirmed">● Hadir</span></td>
+              <td><span class="wi-guest-pax">2 orang</span></td>
+              <td><span class="wi-guest-message">Selamat ya, semoga bahagia selalu! 🎉</span></td>
+              <td style="font-size:12px;color:var(--gray);">2 jam lalu</td>
+            </tr>
+            <tr>
+              <td><div class="wi-guest-name">Bapak Ahmad Wijaya</div><div class="wi-guest-email">ahmad.w@yahoo.com</div></td>
+              <td><span class="wi-guest-status confirmed">● Hadir</span></td>
+              <td><span class="wi-guest-pax">3 orang</span></td>
+              <td><span class="wi-guest-message">Semoga menjadi keluarga yang sakinah</span></td>
+              <td style="font-size:12px;color:var(--gray);">5 jam lalu</td>
+            </tr>
+            <tr>
+              <td><div class="wi-guest-name">Dian Pratama</div><div class="wi-guest-email">dian.p@gmail.com</div></td>
+              <td><span class="wi-guest-status pending">● Belum Konfirmasi</span></td>
+              <td><span class="wi-guest-pax">-</span></td>
+              <td><span class="wi-guest-message">-</span></td>
+              <td style="font-size:12px;color:var(--gray);">1 hari lalu</td>
+            </tr>
+            <tr>
+              <td><div class="wi-guest-name">Fajar Nugroho</div><div class="wi-guest-email">fajar.n@outlook.com</div></td>
+              <td><span class="wi-guest-status declined">● Tidak Hadir</span></td>
+              <td><span class="wi-guest-pax">-</span></td>
+              <td><span class="wi-guest-message">Maaf tidak bisa hadir, semoga lancar</span></td>
+              <td style="font-size:12px;color:var(--gray);">2 hari lalu</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Mobile Cards -->
+      <div class="wi-rsvp-cards">
+        <div class="wi-rsvp-card">
+          <div class="wi-rsvp-card-header">
+            <div>
+              <div class="wi-rsvp-card-name">Rina Susanti</div>
+              <div class="wi-rsvp-card-email">rina.s@gmail.com</div>
+            </div>
+            <span class="wi-guest-status confirmed">● Hadir</span>
+          </div>
+          <div class="wi-rsvp-card-body">
+            <div>Jumlah: <span>2 orang</span></div>
+            <div>Waktu: <span>2 jam lalu</span></div>
+            <div style="grid-column:span 2;">Ucapan: <span>Selamat ya, semoga bahagia selalu! 🎉</span></div>
+          </div>
+        </div>
+        <div class="wi-rsvp-card">
+          <div class="wi-rsvp-card-header">
+            <div>
+              <div class="wi-rsvp-card-name">Bapak Ahmad Wijaya</div>
+              <div class="wi-rsvp-card-email">ahmad.w@yahoo.com</div>
+            </div>
+            <span class="wi-guest-status confirmed">● Hadir</span>
+          </div>
+          <div class="wi-rsvp-card-body">
+            <div>Jumlah: <span>3 orang</span></div>
+            <div>Waktu: <span>5 jam lalu</span></div>
+            <div style="grid-column:span 2;">Ucapan: <span>Semoga menjadi keluarga yang sakinah</span></div>
+          </div>
+        </div>
+        <div class="wi-rsvp-card">
+          <div class="wi-rsvp-card-header">
+            <div>
+              <div class="wi-rsvp-card-name">Dian Pratama</div>
+              <div class="wi-rsvp-card-email">dian.p@gmail.com</div>
+            </div>
+            <span class="wi-guest-status pending">● Belum</span>
+          </div>
+          <div class="wi-rsvp-card-body">
+            <div>Jumlah: <span>-</span></div>
+            <div>Waktu: <span>1 hari lalu</span></div>
+          </div>
+        </div>
+        <div class="wi-rsvp-card">
+          <div class="wi-rsvp-card-header">
+            <div>
+              <div class="wi-rsvp-card-name">Fajar Nugroho</div>
+              <div class="wi-rsvp-card-email">fajar.n@outlook.com</div>
+            </div>
+            <span class="wi-guest-status declined">● Tidak</span>
+          </div>
+          <div class="wi-rsvp-card-body">
+            <div>Jumlah: <span>-</span></div>
+            <div>Waktu: <span>2 hari lalu</span></div>
+            <div style="grid-column:span 2;">Ucapan: <span>Maaf tidak bisa hadir, semoga lancar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+</script>
+</body>
+</html>

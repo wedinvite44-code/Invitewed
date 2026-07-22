@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WedInvite - Platform Undangan Digital Pernikahan #1 Indonesia</title>
+<meta name="description" content="Buat undangan digital pernikahan elegan dengan fitur lengkap: RSVP, amplop digital, galeri foto, musik, dan peta lokasi. 50.000+ pasangan telah mempercayai kami.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#0f0f23; --navy-light:#1a1a3e; --gold:#c9a96e; --gold-light:#e8d5b0; --cream:#faf7f2; --white:#fff; --gray:#8a8a9a; --gray-light:#e8e8ee; --success:#22c55e; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy); overflow-x:hidden; }
+
+/* Navbar */
+.wi-navbar { position:fixed; top:0; left:0; right:0; z-index:1000; padding:18px 60px; display:flex; justify-content:space-between; align-items:center; transition:all .4s ease; }
+.wi-navbar.scrolled { background:rgba(15,15,35,.97); backdrop-filter:blur(20px); padding:14px 60px; box-shadow:0 4px 30px rgba(0,0,0,.15); }
+.wi-logo { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--white); text-decoration:none; display:flex; align-items:center; gap:10px; }
+.wi-logo span { color:var(--gold); }
+.wi-nav-links { display:flex; gap:36px; list-style:none; align-items:center; }
+.wi-nav-links a { color:rgba(255,255,255,.85); text-decoration:none; font-size:14px; font-weight:500; letter-spacing:.3px; transition:all .3s; position:relative; }
+.wi-nav-links a::after { content:''; position:absolute; bottom:-6px; left:0; width:0; height:2px; background:var(--gold); transition:width .3s; }
+.wi-nav-links a:hover { color:var(--gold); }
+.wi-nav-links a:hover::after { width:100%; }
+.wi-nav-cta { background:var(--gold); color:var(--navy); padding:12px 28px; border-radius:50px; font-size:13px; font-weight:600; letter-spacing:1px; text-transform:uppercase; text-decoration:none; transition:all .3s; }
+.wi-nav-cta:hover { background:var(--gold-light); transform:translateY(-2px); box-shadow:0 8px 25px rgba(201,169,110,.35); }
+.wi-nav-cta.secondary { background:transparent; color:var(--white); border:1.5px solid rgba(255,255,255,.3); }
+.wi-nav-cta.secondary:hover { border-color:var(--gold); color:var(--gold); }
+
+/* Hero */
+.wi-hero { min-height:100vh; background:var(--navy); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; padding:140px 60px 100px; }
+.wi-hero::before { content:''; position:absolute; top:-30%; right:-20%; width:700px; height:700px; background:radial-gradient(circle,rgba(201,169,110,.08) 0%,transparent 70%); pointer-events:none; }
+.wi-hero::after { content:''; position:absolute; bottom:-20%; left:-10%; width:500px; height:500px; background:radial-gradient(circle,rgba(201,169,110,.05) 0%,transparent 70%); pointer-events:none; }
+.wi-hero-inner { max-width:1200px; width:100%; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; position:relative; z-index:2; }
+.wi-hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(201,169,110,.15); border:1px solid rgba(201,169,110,.3); padding:8px 20px; border-radius:50px; font-size:12px; color:var(--gold); letter-spacing:1px; text-transform:uppercase; margin-bottom:28px; }
+.wi-hero h1 { font-family:'Playfair Display',serif; font-size:54px; font-weight:700; color:var(--white); line-height:1.15; margin-bottom:24px; }
+.wi-hero h1 em { font-style:italic; color:var(--gold); }
+.wi-hero p { font-size:17px; color:rgba(255,255,255,.65); line-height:1.8; max-width:480px; margin-bottom:40px; }
+.wi-hero-btns { display:flex; gap:16px; flex-wrap:wrap; }
+.wi-btn-primary { background:var(--gold); color:var(--navy); padding:16px 36px; border-radius:50px; font-size:14px; font-weight:600; letter-spacing:1px; text-transform:uppercase; text-decoration:none; transition:all .3s; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+.wi-btn-primary:hover { background:var(--gold-light); transform:translateY(-3px); box-shadow:0 12px 35px rgba(201,169,110,.35); }
+.wi-btn-outline { background:transparent; color:var(--white); padding:16px 36px; border-radius:50px; font-size:14px; font-weight:600; letter-spacing:1px; text-transform:uppercase; text-decoration:none; transition:all .3s; border:1.5px solid rgba(255,255,255,.3); cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+.wi-btn-outline:hover { border-color:var(--gold); color:var(--gold); transform:translateY(-3px); }
+.wi-hero-stats { display:flex; gap:50px; margin-top:50px; padding-top:30px; border-top:1px solid rgba(255,255,255,.1); }
+.wi-stat-number { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--gold); }
+.wi-stat-label { font-size:12px; color:rgba(255,255,255,.5); letter-spacing:1px; text-transform:uppercase; margin-top:4px; }
+
+/* Phone Mockup */
+.wi-phone-mockup { position:relative; display:flex; justify-content:center; align-items:center; }
+.wi-phone { width:280px; height:560px; background:var(--navy-light); border-radius:40px; border:8px solid rgba(255,255,255,.1); box-shadow:0 40px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.05); overflow:hidden; position:relative; transform:rotate(-5deg); transition:transform .5s ease; }
+.wi-phone:hover { transform:rotate(0deg); }
+.wi-phone-screen { width:100%; height:100%; background:var(--cream); padding:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.wi-phone-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:15px; }
+.wi-phone-names { font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); }
+.wi-phone-amp { font-family:'Playfair Display',serif; font-style:italic; color:var(--gold); font-size:18px; margin:5px 0; }
+.wi-phone-date { font-size:10px; color:var(--gray); letter-spacing:2px; margin-top:15px; }
+.wi-phone-btn { background:var(--navy); color:var(--white); padding:8px 18px; border-radius:20px; font-size:10px; letter-spacing:1px; margin-top:15px; }
+
+/* Trust */
+.wi-trust { background:var(--white); padding:50px 60px; text-align:center; }
+.wi-trust-label { font-size:12px; color:var(--gray); letter-spacing:3px; text-transform:uppercase; margin-bottom:30px; }
+.wi-trust-logos { display:flex; justify-content:center; align-items:center; gap:60px; flex-wrap:wrap; opacity:.4; }
+.wi-trust-logo { font-family:'Playfair Display',serif; font-size:20px; color:var(--navy); font-weight:600; }
+
+/* Features */
+.wi-features { padding:120px 60px; max-width:1200px; margin:0 auto; }
+.wi-section-header { text-align:center; margin-bottom:80px; }
+.wi-section-tag { font-size:12px; color:var(--gold); letter-spacing:4px; text-transform:uppercase; margin-bottom:16px; font-weight:600; }
+.wi-section-title { font-family:'Playfair Display',serif; font-size:42px; font-weight:700; color:var(--navy); margin-bottom:16px; }
+.wi-section-desc { font-size:16px; color:var(--gray); max-width:560px; margin:0 auto; line-height:1.7; }
+.wi-features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
+.wi-feature-card { background:var(--white); border-radius:24px; padding:40px 30px; text-align:center; transition:all .4s ease; border:1px solid transparent; }
+.wi-feature-card:hover { transform:translateY(-8px); box-shadow:0 20px 60px rgba(15,15,35,.08); border-color:rgba(201,169,110,.2); }
+.wi-feature-icon { width:64px; height:64px; background:var(--cream); border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; font-size:28px; transition:all .3s; }
+.wi-feature-card:hover .wi-feature-icon { background:var(--gold); transform:scale(1.1); }
+.wi-feature-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:600; color:var(--navy); margin-bottom:12px; }
+.wi-feature-desc { font-size:14px; color:var(--gray); line-height:1.7; }
+
+/* Templates */
+.wi-templates { background:var(--navy); padding:120px 60px; position:relative; overflow:hidden; }
+.wi-templates::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); pointer-events:none; }
+.wi-templates-inner { max-width:1200px; margin:0 auto; position:relative; z-index:2; }
+.wi-templates-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; margin-top:60px; }
+.wi-template-card { background:var(--navy-light); border-radius:20px; overflow:hidden; transition:all .4s ease; cursor:pointer; border:1px solid rgba(255,255,255,.05); text-decoration:none; }
+.wi-template-card:hover { transform:translateY(-10px) scale(1.02); box-shadow:0 30px 60px rgba(0,0,0,.3); border-color:rgba(201,169,110,.3); }
+.wi-template-preview { height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center; position:relative; }
+.wi-template-info { padding:20px; }
+.wi-template-title { font-size:15px; font-weight:600; color:var(--white); margin-bottom:6px; }
+.wi-template-meta { font-size:12px; color:var(--gray); }
+.wi-template-badge { display:inline-block; background:var(--gold); color:var(--navy); font-size:10px; font-weight:600; padding:4px 12px; border-radius:20px; margin-top:10px; letter-spacing:.5px; }
+
+/* How It Works */
+.wi-how { padding:120px 60px; max-width:1200px; margin:0 auto; }
+.wi-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:40px; margin-top:60px; position:relative; }
+.wi-steps::before { content:''; position:absolute; top:40px; left:80px; right:80px; height:2px; background:var(--gray-light); z-index:0; }
+.wi-step { text-align:center; position:relative; z-index:1; }
+.wi-step-number { width:80px; height:80px; background:var(--white); border:3px solid var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:var(--gold); transition:all .3s; }
+.wi-step:hover .wi-step-number { background:var(--gold); color:var(--white); transform:scale(1.1); }
+.wi-step-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--navy); margin-bottom:10px; }
+.wi-step-desc { font-size:14px; color:var(--gray); line-height:1.6; }
+
+/* Pricing */
+.wi-pricing { background:var(--cream); padding:120px 60px; }
+.wi-pricing-inner { max-width:1000px; margin:0 auto; }
+.wi-pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; margin-top:60px; }
+.wi-price-card { background:var(--white); border-radius:24px; padding:40px 30px; text-align:center; transition:all .4s ease; position:relative; border:2px solid transparent; }
+.wi-price-card:hover { transform:translateY(-8px); box-shadow:0 25px 60px rgba(15,15,35,.1); }
+.wi-price-card.popular { border-color:var(--gold); transform:scale(1.05); }
+.wi-price-card.popular:hover { transform:scale(1.05) translateY(-8px); }
+.wi-price-badge { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--navy); font-size:11px; font-weight:700; padding:6px 20px; border-radius:20px; letter-spacing:1px; text-transform:uppercase; }
+.wi-price-name { font-family:'Playfair Display',serif; font-size:22px; font-weight:600; color:var(--navy); margin-bottom:8px; }
+.wi-price-desc { font-size:13px; color:var(--gray); margin-bottom:24px; }
+.wi-price-amount { font-family:'Playfair Display',serif; font-size:42px; font-weight:700; color:var(--navy); margin-bottom:8px; }
+.wi-price-amount span { font-size:16px; color:var(--gray); font-weight:400; }
+.wi-price-period { font-size:13px; color:var(--gray); margin-bottom:30px; }
+.wi-price-features { list-style:none; text-align:left; margin-bottom:30px; }
+.wi-price-features li { font-size:14px; color:var(--gray); padding:10px 0; border-bottom:1px solid var(--gray-light); display:flex; align-items:center; gap:10px; }
+.wi-price-features li::before { content:'✓'; color:var(--gold); font-weight:700; }
+.wi-price-btn { width:100%; padding:14px; border-radius:50px; font-size:13px; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all .3s; border:2px solid var(--navy); background:transparent; color:var(--navy); font-family:'Inter',sans-serif; text-decoration:none; display:inline-block; }
+.wi-price-btn:hover { background:var(--navy); color:var(--white); }
+.wi-price-card.popular .wi-price-btn { background:var(--gold); border-color:var(--gold); color:var(--navy); }
+.wi-price-card.popular .wi-price-btn:hover { background:var(--gold-light); border-color:var(--gold-light); }
+
+/* Testimonials */
+.wi-testimonials { padding:120px 60px; max-width:1200px; margin:0 auto; }
+.wi-testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; margin-top:60px; }
+.wi-testi-card { background:var(--white); border-radius:24px; padding:35px 30px; transition:all .3s; }
+.wi-testi-card:hover { box-shadow:0 15px 50px rgba(15,15,35,.08); transform:translateY(-5px); }
+.wi-testi-stars { color:var(--gold); font-size:16px; margin-bottom:16px; letter-spacing:2px; }
+.wi-testi-text { font-size:15px; color:var(--navy); line-height:1.8; margin-bottom:24px; font-style:italic; }
+.wi-testi-author { display:flex; align-items:center; gap:14px; }
+.wi-testi-avatar { width:44px; height:44px; border-radius:50%; background:var(--cream); display:flex; align-items:center; justify-content:center; font-size:18px; }
+.wi-testi-name { font-weight:600; font-size:14px; color:var(--navy); }
+.wi-testi-role { font-size:12px; color:var(--gray); }
+
+/* FAQ Section */
+.wi-faq { padding:120px 60px; max-width:800px; margin:0 auto; }
+.wi-faq-item { background:var(--white); border-radius:16px; margin-bottom:16px; overflow:hidden; border:1px solid var(--gray-light); transition:all .3s; }
+.wi-faq-item:hover { box-shadow:0 8px 30px rgba(15,15,35,.06); }
+.wi-faq-question { padding:22px 28px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-size:15px; font-weight:600; color:var(--navy); transition:all .2s; border:none; background:transparent; width:100%; text-align:left; font-family:'Inter',sans-serif; }
+.wi-faq-question:hover { color:var(--gold); }
+.wi-faq-answer { padding:0 28px 22px; font-size:14px; color:var(--gray); line-height:1.7; display:none; }
+.wi-faq-item.open .wi-faq-answer { display:block; }
+.wi-faq-item.open .wi-faq-question { color:var(--gold); }
+.wi-faq-icon { font-size:12px; transition:transform .3s; }
+.wi-faq-item.open .wi-faq-icon { transform:rotate(180deg); }
+
+/* CTA */
+.wi-cta { background:var(--navy); padding:100px 60px; text-align:center; position:relative; overflow:hidden; }
+.wi-cta::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(201,169,110,.1) 0%,transparent 70%); pointer-events:none; }
+.wi-cta h2 { font-family:'Playfair Display',serif; font-size:42px; color:var(--white); margin-bottom:20px; position:relative; z-index:2; }
+.wi-cta h2 em { font-style:italic; color:var(--gold); }
+.wi-cta p { font-size:17px; color:rgba(255,255,255,.6); max-width:500px; margin:0 auto 40px; line-height:1.7; position:relative; z-index:2; }
+
+/* Footer */
+.wi-footer { background:var(--navy); border-top:1px solid rgba(255,255,255,.05); padding:70px 60px 40px; }
+.wi-footer-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; gap:50px; }
+.wi-footer-brand { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--white); margin-bottom:16px; }
+.wi-footer-brand span { color:var(--gold); }
+.wi-footer-desc { font-size:14px; color:var(--gray); line-height:1.7; margin-bottom:24px; }
+.wi-footer-social { display:flex; gap:12px; }
+.wi-footer-social a { width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center; color:var(--gray); text-decoration:none; font-size:16px; transition:all .3s; }
+.wi-footer-social a:hover { background:var(--gold); color:var(--navy); transform:translateY(-3px); }
+.wi-footer-title { font-size:14px; font-weight:600; color:var(--white); margin-bottom:20px; letter-spacing:1px; }
+.wi-footer-links { list-style:none; }
+.wi-footer-links li { margin-bottom:12px; }
+.wi-footer-links a { font-size:14px; color:var(--gray); text-decoration:none; transition:color .3s; }
+.wi-footer-links a:hover { color:var(--gold); }
+.wi-footer-bottom { max-width:1200px; margin:50px auto 0; padding-top:30px; border-top:1px solid rgba(255,255,255,.05); display:flex; justify-content:space-between; align-items:center; }
+.wi-footer-bottom p { font-size:13px; color:var(--gray); }
+
+/* Animations */
+.wi-fade-up { opacity:0; transform:translateY(40px); transition:all .8s ease; }
+.wi-fade-up.visible { opacity:1; transform:translateY(0); }
+
+/* Responsive */
+@media (max-width:1024px) {
+  .wi-hero-inner { grid-template-columns:1fr; text-align:center; gap:60px; }
+  .wi-hero p { margin:0 auto 40px; }
+  .wi-hero-btns { justify-content:center; }
+  .wi-hero-stats { justify-content:center; }
+  .wi-features-grid, .wi-templates-grid, .wi-testi-grid { grid-template-columns:repeat(2,1fr); }
+  .wi-steps { grid-template-columns:repeat(2,1fr); }
+  .wi-steps::before { display:none; }
+  .wi-pricing-grid { grid-template-columns:1fr; max-width:400px; margin:60px auto 0; }
+  .wi-price-card.popular { transform:scale(1); }
+  .wi-footer-inner { grid-template-columns:repeat(2,1fr); }
+  .wi-navbar { padding:15px 30px; }
+  .wi-nav-links { gap:20px; }
+}
+@media (max-width:768px) {
+  .wi-navbar { padding:15px 20px; }
+  .wi-nav-links { display:none; }
+  .wi-hero { padding:100px 20px 60px; }
+  .wi-hero h1 { font-size:36px; }
+  .wi-features, .wi-how, .wi-testimonials, .wi-faq { padding:80px 20px; }
+  .wi-features-grid, .wi-templates-grid, .wi-testi-grid, .wi-steps { grid-template-columns:1fr; }
+  .wi-pricing { padding:80px 20px; }
+  .wi-footer { padding:50px 20px 30px; }
+  .wi-footer-inner { grid-template-columns:1fr; gap:30px; }
+  .wi-footer-bottom { flex-direction:column; gap:10px; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<nav class="wi-navbar" id="navbar">
+  <a href="index.html" class="wi-logo">Wed<span>Invite</span></a>
+  <ul class="wi-nav-links">
+    <li><a href="#features">Fitur</a></li>
+    <li><a href="#templates">Template</a></li>
+    <li><a href="#pricing">Harga</a></li>
+    <li><a href="#testimonials">Testimoni</a></li>
+    <li><a href="help.html">Bantuan</a></li>
+    <li><a href="login.html" class="wi-nav-cta secondary">Masuk</a></li>
+    <li><a href="login.html" class="wi-nav-cta">Buat Undangan</a></li>
+  </ul>
+</nav>
+
+<section class="wi-hero">
+  <div class="wi-hero-inner">
+    <div>
+      <div class="wi-hero-badge">✨ Platform Undangan Digital #1 di Indonesia</div>
+      <h1>Buat Undangan Pernikahan <em>Digital</em> yang Elegan & Berkesan</h1>
+      <p>Rancang undangan pernikahan digital dengan desain premium, fitur lengkap, dan pengalaman yang tak terlupakan untuk tamu spesial Anda.</p>
+      <div class="wi-hero-btns">
+        <a href="login.html" class="wi-btn-primary">Mulai Gratis →</a>
+        <a href="invitation.html" class="wi-btn-outline">Lihat Demo</a>
+      </div>
+      <div class="wi-hero-stats">
+        <div><div class="wi-stat-number">50.000+</div><div class="wi-stat-label">Undangan Dibuat</div></div>
+        <div><div class="wi-stat-number">200+</div><div class="wi-stat-label">Template Eksklusif</div></div>
+        <div><div class="wi-stat-number">4.9★</div><div class="wi-stat-label">Rating Pengguna</div></div>
+      </div>
+    </div>
+    <div class="wi-phone-mockup">
+      <div class="wi-phone">
+        <div class="wi-phone-screen">
+          <div class="wi-phone-label">The Wedding of</div>
+          <div style="font-size:28px;margin:10px 0;">💑</div>
+          <div class="wi-phone-names">Arya</div>
+          <div class="wi-phone-amp">&</div>
+          <div class="wi-phone-names">Dewi</div>
+          <div class="wi-phone-date">15 Agustus 2026</div>
+          <div class="wi-phone-btn">Buka Undangan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wi-trust">
+  <div class="wi-trust-label">Dipercaya oleh pasangan dari berbagai kota</div>
+  <div class="wi-trust-logos">
+    <div class="wi-trust-logo">Jakarta</div>
+    <div class="wi-trust-logo">Surabaya</div>
+    <div class="wi-trust-logo">Bandung</div>
+    <div class="wi-trust-logo">Yogyakarta</div>
+    <div class="wi-trust-logo">Bali</div>
+    <div class="wi-trust-logo">Medan</div>
+  </div>
+</section>
+
+<section class="wi-features" id="features">
+  <div class="wi-section-header wi-fade-up">
+    <div class="wi-section-tag">Fitur Unggulan</div>
+    <h2 class="wi-section-title">Semua yang Anda Butuhkan</h2>
+    <p class="wi-section-desc">Kami menghadirkan fitur lengkap untuk membuat undangan digital pernikahan Anda sempurna dari ujung ke ujung.</p>
+  </div>
+  <div class="wi-features-grid">
+    <div class="wi-feature-card wi-fade-up">
+      <div class="wi-feature-icon">🎨</div>
+      <div class="wi-feature-title">200+ Template Premium</div>
+      <div class="wi-feature-desc">Pilih dari ratusan desain elegan yang dapat dikustomisasi sepenuhnya sesuai tema pernikahan Anda.</div>
+    </div>
+    <div class="wi-feature-card wi-fade-up">
+      <div class="wi-feature-icon">📱</div>
+      <div class="wi-feature-title">Responsif di Semua Device</div>
+      <div class="wi-feature-desc">Tampilan sempurna di smartphone, tablet, maupun desktop. Tamu dapat membuka dari mana saja.</div>
+    </div>
+    <div class="wi-feature-card wi-fade-up">
+      <div class="wi-feature-icon">🎵</div>
+      <div class="wi-feature-title">Musik & Video Background</div>
+      <div class="wi-feature-desc">Tambahkan backsound romantis dan video prewedding untuk sentuhan personal yang mendalam.</div>
+    </div>
+    <div class="wi-feature-card wi-fade-up">
+      <div class="wi-feature-icon">📍</div>
+      <div class="wi-feature-title">Integrasi Google Maps</div>
+      <div class="wi-feature-desc">Tamu dapat langsung navigasi ke lokasi acara dengan peta interaktif yang terintegrasi.</div>
+    </div>
+    <div class="wi-feature-card wi-fade-up">
+      <div class="wi-feature-icon">✅</div>
+      <div class="wi-feature-title">RSVP & Manajemen Tamu</div>
+      <div class="wi-feature-desc">Kelola daftar tamu, konfirmasi kehadiran, dan pantau statistik tamu yang hadir secara real-time.</div>
+    </div>
+    <div class="wi-feature-card wi-fade-up">
+      <div class="wi-feature-icon">🎁</div>
+      <div class="wi-feature-title">Amplop Digital & Kado</div>
+      <div class="wi-feature-desc">Terima ucapan selamat dan hadiah digital langsung melalui platform dengan sistem yang aman.</div>
+    </div>
+  </div>
+</section>
+
+<section class="wi-templates" id="templates">
+  <div class="wi-templates-inner">
+    <div class="wi-section-header wi-fade-up">
+      <div class="wi-section-tag" style="color:var(--gold-light)">Koleksi Template</div>
+      <h2 class="wi-section-title" style="color:var(--white)">Pilih Gaya yang Sesuai</h2>
+      <p class="wi-section-desc" style="color:rgba(255,255,255,.5)">Dari klasik hingga modern, temukan template yang mencerminkan kepribadian Anda berdua.</p>
+    </div>
+    <div class="wi-templates-grid">
+      <a href="login.html" class="wi-template-card wi-fade-up">
+        <div class="wi-template-preview" style="background:linear-gradient(135deg,#1a1a3e 0%,#2d2d5a 100%);">
+          <div style="color:var(--gold);font-family:'Playfair Display',serif;font-size:20px;">Elegan</div>
+          <div style="color:rgba(255,255,255,.6);font-size:10px;margin-top:5px;letter-spacing:2px;">NAVY GOLD</div>
+        </div>
+        <div class="wi-template-info">
+          <div class="wi-template-title">Royal Navy</div>
+          <div class="wi-template-meta">Elegan · Minimalis · Modern</div>
+          <span class="wi-template-badge">POPULER</span>
+        </div>
+      </a>
+      <a href="login.html" class="wi-template-card wi-fade-up">
+        <div class="wi-template-preview" style="background:linear-gradient(135deg,#faf7f2 0%,#f0e6d3 100%);">
+          <div style="color:#8b7355;font-family:'Playfair Display',serif;font-size:20px;">Rustic</div>
+          <div style="color:#a09080;font-size:10px;margin-top:5px;letter-spacing:2px;">EARTH TONE</div>
+        </div>
+        <div class="wi-template-info">
+          <div class="wi-template-title">Garden Rustic</div>
+          <div class="wi-template-meta">Natural · Hangat · Floral</div>
+        </div>
+      </a>
+      <a href="login.html" class="wi-template-card wi-fade-up">
+        <div class="wi-template-preview" style="background:linear-gradient(135deg,#fff5f5 0%,#ffe0e0 100%);">
+          <div style="color:#c44569;font-family:'Playfair Display',serif;font-size:20px;">Romantis</div>
+          <div style="color:#d67895;font-size:10px;margin-top:5px;letter-spacing:2px;">BLUSH PINK</div>
+        </div>
+        <div class="wi-template-info">
+          <div class="wi-template-title">Blush Romance</div>
+          <div class="wi-template-meta">Feminin · Lembut · Dreamy</div>
+        </div>
+      </a>
+      <a href="login.html" class="wi-template-card wi-fade-up">
+        <div class="wi-template-preview" style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);">
+          <div style="color:#e8d5b0;font-family:'Playfair Display',serif;font-size:20px;">Luxury</div>
+          <div style="color:rgba(255,255,255,.4);font-size:10px;margin-top:5px;letter-spacing:2px;">BLACK GOLD</div>
+        </div>
+        <div class="wi-template-info">
+          <div class="wi-template-title">Midnight Luxe</div>
+          <div class="wi-template-meta">Mewah · Glamour · Bold</div>
+          <span class="wi-template-badge">BARU</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="wi-how" id="how">
+  <div class="wi-section-header wi-fade-up">
+    <div class="wi-section-tag">Cara Kerja</div>
+    <h2 class="wi-section-title">Cukup 4 Langkah Sederhana</h2>
+    <p class="wi-section-desc">Buat undangan digital impian Anda dalam hitungan menit, tanpa perlu keahlian desain.</p>
+  </div>
+  <div class="wi-steps">
+    <div class="wi-step wi-fade-up">
+      <div class="wi-step-number">1</div>
+      <div class="wi-step-title">Pilih Template</div>
+      <div class="wi-step-desc">Jelajahi ratusan desain premium dan pilih yang paling mencerminkan gaya Anda.</div>
+    </div>
+    <div class="wi-step wi-fade-up">
+      <div class="wi-step-number">2</div>
+      <div class="wi-step-title">Isi Detail</div>
+      <div class="wi-step-desc">Masukkan informasi pernikahan, foto, dan pesan personal dengan mudah.</div>
+    </div>
+    <div class="wi-step wi-fade-up">
+      <div class="wi-step-number">3</div>
+      <div class="wi-step-title">Kustomisasi</div>
+      <div class="wi-step-desc">Sesuaikan warna, font, musik, dan tata letak sesuai keinginan Anda.</div>
+    </div>
+    <div class="wi-step wi-fade-up">
+      <div class="wi-step-number">4</div>
+      <div class="wi-step-title">Bagikan</div>
+      <div class="wi-step-desc">Sebarkan undangan melalui WhatsApp, email, atau media sosial secara instan.</div>
+    </div>
+  </div>
+</section>
+
+<section class="wi-pricing" id="pricing">
+  <div class="wi-pricing-inner">
+    <div class="wi-section-header wi-fade-up">
+      <div class="wi-section-tag">Paket Harga</div>
+      <h2 class="wi-section-title">Pilih Paket yang Tepat</h2>
+      <p class="wi-section-desc">Harga transparan tanpa biaya tersembunyi. Upgrade kapan saja sesuai kebutuhan Anda.</p>
+    </div>
+    <div class="wi-pricing-grid">
+      <div class="wi-price-card wi-fade-up">
+        <div class="wi-price-name">Starter</div>
+        <div class="wi-price-desc">Cocok untuk undangan sederhana</div>
+        <div class="wi-price-amount">Gratis</div>
+        <div class="wi-price-period">Selamanya</div>
+        <ul class="wi-price-features">
+          <li>1 Template Dasar</li>
+          <li>Bagikan via Link</li>
+          <li>RSVP Dasar</li>
+          <li>Watermark WedInvite</li>
+        </ul>
+        <a href="login.html" class="wi-price-btn">Mulai Gratis</a>
+      </div>
+      <div class="wi-price-card popular wi-fade-up">
+        <div class="wi-price-badge">Paling Populer</div>
+        <div class="wi-price-name">Premium</div>
+        <div class="wi-price-desc">Pilihan terbaik untuk pernikahan</div>
+        <div class="wi-price-amount">Rp149K <span>/ undangan</span></div>
+        <div class="wi-price-period">Sekali bayar, aktif selamanya</div>
+        <ul class="wi-price-features">
+          <li>Semua Template Premium</li>
+          <li>Tanpa Watermark</li>
+          <li>Musik & Video Background</li>
+          <li>Google Maps Integration</li>
+          <li>Amplop Digital</li>
+          <li>RSVP Lengkap & Statistik</li>
+          <li>Custom Domain</li>
+          <li>Support Prioritas</li>
+        </ul>
+        <a href="checkout.html" class="wi-price-btn">Pilih Premium</a>
+      </div>
+      <div class="wi-price-card wi-fade-up">
+        <div class="wi-price-name">Exclusive</div>
+        <div class="wi-price-desc">Untuk pengalaman terbaik</div>
+        <div class="wi-price-amount">Rp299K <span>/ undangan</span></div>
+        <div class="wi-price-period">Sekali bayar, aktif selamanya</div>
+        <ul class="wi-price-features">
+          <li>Semua Fitur Premium</li>
+          <li>Desain Custom Eksklusif</li>
+          <li>Video Prewedding Full</li>
+          <li>Live Streaming Embed</li>
+          <li>QR Code Check-in</li>
+          <li>Dedicated Account Manager</li>
+        </ul>
+        <a href="checkout.html" class="wi-price-btn">Pilih Exclusive</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wi-testimonials" id="testimonials">
+  <div class="wi-section-header wi-fade-up">
+    <div class="wi-section-tag">Testimoni</div>
+    <h2 class="wi-section-title">Kata Mereka yang Sudah Memilih WedInvite</h2>
+    <p class="wi-section-desc">Ribuan pasangan telah mempercayakan momen spesial mereka kepada kami.</p>
+  </div>
+  <div class="wi-testi-grid">
+    <div class="wi-testi-card wi-fade-up">
+      <div class="wi-testi-stars">★★★★★</div>
+      <div class="wi-testi-text">"WedInvite benar-benar mengubah cara kami mengundang tamu. Desainnya elegan, fitur lengkap, dan tamu-tamu kami sangat terkesan. Prosesnya juga super mudah!"</div>
+      <div class="wi-testi-author">
+        <div class="wi-testi-avatar">👰</div>
+        <div><div class="wi-testi-name">Rina & Andi</div><div class="wi-testi-role">Jakarta · Template Royal Navy</div></div>
+      </div>
+    </div>
+    <div class="wi-testi-card wi-fade-up">
+      <div class="wi-testi-stars">★★★★★</div>
+      <div class="wi-testi-text">"Saya awalnya ragu dengan undangan digital, tapi WedInvite melebihi ekspektasi. Fitur RSVP dan amplop digital sangat membantu. Highly recommended!"</div>
+      <div class="wi-testi-author">
+        <div class="wi-testi-avatar">🤵</div>
+        <div><div class="wi-testi-name">Budi & Sari</div><div class="wi-testi-role">Surabaya · Template Garden Rustic</div></div>
+      </div>
+    </div>
+    <div class="wi-testi-card wi-fade-up">
+      <div class="wi-testi-stars">★★★★★</div>
+      <div class="wi-testi-text">"Pelayanan customer service yang luar biasa. Mereka membantu kami menyesuaikan desain sampai benar-benar sempurna. Undangan kami jadi pembicaraan semua tamu!"</div>
+      <div class="wi-testi-author">
+        <div class="wi-testi-avatar">💑</div>
+        <div><div class="wi-testi-name">Dian & Fajar</div><div class="wi-testi-role">Bandung · Template Blush Romance</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wi-faq" id="faq">
+  <div class="wi-section-header wi-fade-up">
+    <div class="wi-section-tag">FAQ</div>
+    <h2 class="wi-section-title">Pertanyaan yang Sering Diajukan</h2>
+    <p class="wi-section-desc">Temukan jawaban untuk pertanyaan umum seputar WedInvite.</p>
+  </div>
+  <div class="wi-faq-item open wi-fade-up">
+    <button class="wi-faq-question" onclick="toggleFaq(this)">
+      <span>Bagaimana cara membuat undangan digital di WedInvite?</span>
+      <span class="wi-faq-icon">▼</span>
+    </button>
+    <div class="wi-faq-answer">
+      Cukup daftar akun gratis, pilih template yang Anda sukai, isi detail pernikahan (nama mempelai, tanggal, lokasi), upload foto, dan klik "Publish". Undangan Anda siap dibagikan dalam hitungan menit!
+    </div>
+  </div>
+  <div class="wi-faq-item wi-fade-up">
+    <button class="wi-faq-question" onclick="toggleFaq(this)">
+      <span>Apakah tamu perlu mengunduh aplikasi untuk membuka undangan?</span>
+      <span class="wi-faq-icon">▶</span>
+    </button>
+    <div class="wi-faq-answer">
+      Tidak perlu! Tamu Anda cukup mengklik link undangan yang Anda bagikan via WhatsApp, email, atau media sosial. Undangan akan terbuka langsung di browser mereka.
+    </div>
+  </div>
+  <div class="wi-faq-item wi-fade-up">
+    <button class="wi-faq-question" onclick="toggleFaq(this)">
+      <span>Berapa lama undangan digital saya aktif?</span>
+      <span class="wi-faq-icon">▶</span>
+    </button>
+    <div class="wi-faq-answer">
+      Undangan digital Anda akan aktif selamanya! Baik paket gratis maupun berbayar, undangan Anda tidak akan expired dan dapat diakses kapan saja.
+    </div>
+  </div>
+  <div class="wi-faq-item wi-fade-up">
+    <button class="wi-faq-question" onclick="toggleFaq(this)">
+      <span>Apakah saya bisa mendapatkan refund?</span>
+      <span class="wi-faq-icon">▶</span>
+    </button>
+    <div class="wi-faq-answer">
+      Ya, kami menawarkan garansi uang kembali 7 hari. Jika Anda tidak puas dengan layanan kami dalam 7 hari setelah pembelian, hubungi support@wedinvite.com untuk pengembalian dana penuh.
+    </div>
+  </div>
+</section>
+
+<section class="wi-cta">
+  <h2>Siap Membuat Undangan <em>Impian</em> Anda?</h2>
+  <p>Bergabung dengan 50.000+ pasangan yang telah mempercayakan momen bahagia mereka kepada WedInvite.</p>
+  <div class="wi-hero-btns" style="justify-content:center">
+    <a href="login.html" class="wi-btn-primary">Buat Undangan Sekarang →</a>
+    <a href="help.html" class="wi-btn-outline">Hubungi Kami</a>
+  </div>
+</section>
+
+<footer class="wi-footer">
+  <div class="wi-footer-inner">
+    <div>
+      <div class="wi-footer-brand">Wed<span>Invite</span></div>
+      <p class="wi-footer-desc">Platform undangan digital pernikahan terbaik di Indonesia. Membantu pasangan menciptakan momen berkesan sejak 2024.</p>
+      <div class="wi-footer-social">
+        <a href="#">📘</a>
+        <a href="#">📸</a>
+        <a href="#">🐦</a>
+        <a href="#">▶️</a>
+      </div>
+    </div>
+    <div>
+      <div class="wi-footer-title">Produk</div>
+      <ul class="wi-footer-links">
+        <li><a href="#templates">Template</a></li>
+        <li><a href="#features">Fitur</a></li>
+        <li><a href="#pricing">Harga</a></li>
+        <li><a href="invitation.html">Demo</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="wi-footer-title">Perusahaan</div>
+      <ul class="wi-footer-links">
+        <li><a href="#">Tentang Kami</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Karir</a></li>
+        <li><a href="help.html">Kontak</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="wi-footer-title">Bantuan</div>
+      <ul class="wi-footer-links">
+        <li><a href="help.html">Pusat Bantuan</a></li>
+        <li><a href="help.html">FAQ</a></li>
+        <li><a href="#">Kebijakan Privasi</a></li>
+        <li><a href="#">Syarat & Ketentuan</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="wi-footer-title">Akun</div>
+      <ul class="wi-footer-links">
+        <li><a href="login.html">Masuk</a></li>
+        <li><a href="login.html">Daftar</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="settings.html">Pengaturan</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wi-footer-bottom">
+    <p>© 2026 WedInvite. All rights reserved. Dibuat dengan ❤️ di Indonesia.</p>
+    <p>support@wedinvite.com · +62 812-3456-7890</p>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const navbar=document.getElementById('navbar');
+  if(window.scrollY>50) navbar.classList.add('scrolled');
+  else navbar.classList.remove('scrolled');
+});
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.classList.add('visible'); });
+},{threshold:0.1});
+document.querySelectorAll('.wi-fade-up').forEach(el=>observer.observe(el));
+document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
+  anchor.addEventListener('click',function(e){
+    e.preventDefault();
+    const target=document.querySelector(this.getAttribute('href'));
+    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+function toggleFaq(el){
+  const item=el.parentElement;
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.wi-faq-item').forEach(i=>{
+    i.classList.remove('open');
+    i.querySelector('.wi-faq-icon').textContent='▶';
+  });
+  if(!isOpen){
+    item.classList.add('open');
+    el.querySelector('.wi-faq-icon').textContent='▼';
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembayaran - WedInvite</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#0f0f23; --navy-light:#1a1a3e; --gold:#c9a96e; --gold-light:#e8d5b0; --cream:#faf7f2; --white:#fff; --gray:#8a8a9a; --gray-light:#e8e8ee; --success:#22c55e; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy); }
+
+/* Header Navigasi */
+.wi-checkout-header-bar { background:var(--navy); padding:16px 40px; display:flex; justify-content:space-between; align-items:center; }
+.wi-checkout-logo { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--white); text-decoration:none; }
+.wi-checkout-logo span { color:var(--gold); }
+.wi-checkout-back { color:rgba(255,255,255,.7); text-decoration:none; font-size:14px; display:flex; align-items:center; gap:6px; transition:color .3s; }
+.wi-checkout-back:hover { color:var(--gold); }
+
+.wi-checkout-page { min-height:100vh; background:var(--cream); padding:40px 0; }
+.wi-checkout-container { max-width:1000px; margin:0 auto; padding:0 40px; }
+.wi-checkout-header { text-align:center; margin-bottom:50px; }
+.wi-checkout-header h2 { font-family:'Playfair Display',serif; font-size:36px; font-weight:700; color:var(--navy); margin-bottom:10px; }
+.wi-checkout-header p { font-size:16px; color:var(--gray); }
+.wi-checkout-grid { display:grid; grid-template-columns:1fr 380px; gap:40px; }
+.wi-checkout-form h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:600; color:var(--navy); margin-bottom:24px; }
+.wi-checkout-section { background:var(--white); border-radius:20px; padding:28px; margin-bottom:24px; }
+.wi-payment-methods { display:flex; flex-direction:column; gap:12px; }
+.wi-payment-method { display:flex; align-items:center; gap:14px; padding:16px; border:2px solid var(--gray-light); border-radius:14px; cursor:pointer; transition:all .3s; }
+.wi-payment-method:hover, .wi-payment-method.selected { border-color:var(--gold); background:rgba(201,169,110,.05); }
+.wi-payment-method input { width:20px; height:20px; accent-color:var(--gold); }
+.wi-payment-icon { width:44px; height:44px; border-radius:10px; background:var(--cream); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.wi-payment-info { flex:1; }
+.wi-payment-name { font-size:14px; font-weight:600; color:var(--navy); }
+.wi-payment-desc { font-size:12px; color:var(--gray); }
+.wi-form-group { margin-bottom:20px; }
+.wi-form-label { display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:8px; }
+.wi-form-input { width:100%; padding:12px 14px; border:2px solid var(--gray-light); border-radius:10px; font-size:13px; font-family:'Inter',sans-serif; color:var(--navy); transition:all .3s; }
+.wi-form-input:focus { outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,169,110,.1); }
+.wi-form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+.wi-checkout-summary { background:var(--white); border-radius:20px; padding:28px; position:sticky; top:30px; height:fit-content; }
+.wi-summary-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--navy); margin-bottom:20px; padding-bottom:16px; border-bottom:2px solid var(--gray-light); }
+.wi-summary-item { display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px; }
+.wi-summary-item.label { color:var(--gray); }
+.wi-summary-item.value { font-weight:600; color:var(--navy); }
+.wi-summary-divider { height:1px; background:var(--gray-light); margin:16px 0; }
+.wi-summary-total { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+.wi-summary-total-label { font-size:16px; font-weight:600; color:var(--navy); }
+.wi-summary-total-value { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:var(--gold); }
+.wi-summary-btn { width:100%; padding:16px; background:var(--navy); color:var(--white); border:none; border-radius:14px; font-size:14px; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all .3s; font-family:'Inter',sans-serif; }
+.wi-summary-btn:hover { background:var(--gold); color:var(--navy); }
+.wi-summary-guarantee { display:flex; align-items:center; gap:8px; margin-top:16px; padding:12px; background:var(--cream); border-radius:10px; font-size:12px; color:var(--gray); }
+
+@media (max-width:1024px) { .wi-checkout-grid { grid-template-columns:1fr; } .wi-checkout-summary { position:static; } }
+@media (max-width:768px) { .wi-checkout-container { padding:0 20px; } .wi-form-row { grid-template-columns:1fr; } .wi-checkout-header-bar { padding:14px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="wi-checkout-header-bar">
+  <a href="index.html" class="wi-checkout-logo">Wed<span>Invite</span></a>
+  <a href="subscription.html" class="wi-checkout-back">← Kembali ke Langganan</a>
+</div>
+
+<div class="wi-checkout-page">
+  <div class="wi-checkout-container">
+    <div class="wi-checkout-header">
+      <h2>Pilih Paket Undangan</h2>
+      <p>Pilih paket yang sesuai dengan kebutuhan pernikahan Anda.</p>
+    </div>
+
+    <div class="wi-checkout-grid">
+      <div class="wi-checkout-form">
+        <div class="wi-checkout-section">
+          <h3>1. Pilih Paket</h3>
+          <div class="wi-payment-methods">
+            <div class="wi-payment-method selected" onclick="selectPackage(this)">
+              <input type="radio" name="package" checked>
+              <div class="wi-payment-icon" style="background:rgba(201,169,110,.15);font-size:22px;">⭐</div>
+              <div class="wi-payment-info">
+                <div class="wi-payment-name">Paket Premium</div>
+                <div class="wi-payment-desc">Semua template, tanpa watermark, musik, maps, RSVP lengkap</div>
+              </div>
+              <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);">Rp149K</div>
+            </div>
+            <div class="wi-payment-method" onclick="selectPackage(this)">
+              <input type="radio" name="package">
+              <div class="wi-payment-icon" style="background:rgba(201,169,110,.15);font-size:22px;">👑</div>
+              <div class="wi-payment-info">
+                <div class="wi-payment-name">Paket Exclusive</div>
+                <div class="wi-payment-desc">Semua fitur Premium + desain custom, live streaming, QR code</div>
+              </div>
+              <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);">Rp299K</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wi-checkout-section">
+          <h3>2. Metode Pembayaran</h3>
+          <div class="wi-payment-methods">
+            <div class="wi-payment-method selected" onclick="selectPayment(this)">
+              <input type="radio" name="payment" checked>
+              <div class="wi-payment-icon">🏦</div>
+              <div class="wi-payment-info"><div class="wi-payment-name">Transfer Bank</div><div class="wi-payment-desc">BCA, Mandiri, BNI, BRI</div></div>
+            </div>
+            <div class="wi-payment-method" onclick="selectPayment(this)">
+              <input type="radio" name="payment">
+              <div class="wi-payment-icon">💳</div>
+              <div class="wi-payment-info"><div class="wi-payment-name">Kartu Kredit / Debit</div><div class="wi-payment-desc">Visa, Mastercard, JCB</div></div>
+            </div>
+            <div class="wi-payment-method" onclick="selectPayment(this)">
+              <input type="radio" name="payment">
+              <div class="wi-payment-icon">📱</div>
+              <div class="wi-payment-info"><div class="wi-payment-name">E-Wallet</div><div class="wi-payment-desc">GoPay, OVO, DANA, LinkAja</div></div>
+            </div>
+            <div class="wi-payment-method" onclick="selectPayment(this)">
+              <input type="radio" name="payment">
+              <div class="wi-payment-icon">🏪</div>
+              <div class="wi-payment-info"><div class="wi-payment-name">QRIS</div><div class="wi-payment-desc">Scan QR dari semua aplikasi</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wi-checkout-section">
+          <h3>3. Detail Pembeli</h3>
+          <div class="wi-form-row">
+            <div class="wi-form-group"><label class="wi-form-label">Nama Depan</label><input type="text" class="wi-form-input" value="Arya"></div>
+            <div class="wi-form-group"><label class="wi-form-label">Nama Belakang</label><input type="text" class="wi-form-input" value="Wijaya"></div>
+          </div>
+          <div class="wi-form-group"><label class="wi-form-label">Email</label><input type="email" class="wi-form-input" value="arya.wijaya@email.com"></div>
+          <div class="wi-form-group"><label class="wi-form-label">No. Telepon</label><input type="tel" class="wi-form-input" value="+62 812 3456 7890"></div>
+        </div>
+      </div>
+
+      <div class="wi-checkout-summary">
+        <div class="wi-summary-title">Ringkasan Pesanan</div>
+        <div class="wi-summary-item"><span class="wi-summary-item label">Paket Premium</span><span class="wi-summary-item value">Rp149.000</span></div>
+        <div class="wi-summary-item"><span class="wi-summary-item label">Diskon (10%)</span><span class="wi-summary-item value" style="color:var(--success);">-Rp14.900</span></div>
+        <div class="wi-summary-item"><span class="wi-summary-item label">Biaya Admin</span><span class="wi-summary-item value">Rp0</span></div>
+        <div class="wi-summary-divider"></div>
+        <div class="wi-summary-total"><span class="wi-summary-total-label">Total Pembayaran</span><span class="wi-summary-total-value">Rp134.100</span></div>
+        <button class="wi-summary-btn" onclick="alert('Pembayaran berhasil! Anda akan diarahkan ke dashboard.'); window.location.href='dashboard.html';">Bayar Sekarang</button>
+        <div class="wi-summary-guarantee"><span>🔒</span><span>Pembayaran aman & terenkripsi. Garansi uang kembali 7 hari.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function selectPackage(el){
+  document.querySelectorAll('input[name="package"]').forEach(i=>i.checked=false);
+  document.querySelectorAll('.wi-payment-method').forEach(m=>{ if(m.querySelector('input[name="package"]')) m.classList.remove('selected'); });
+  el.classList.add('selected'); el.querySelector('input').checked=true;
+}
+function selectPayment(el){
+  document.querySelectorAll('input[name="payment"]').forEach(i=>i.checked=false);
+  document.querySelectorAll('.wi-payment-method').forEach(m=>{ if(m.querySelector('input[name="payment"]')) m.classList.remove('selected'); });
+  el.classList.add('selected'); el.querySelector('input').checked=true;
+}
+</script>
+</body>
+</html>

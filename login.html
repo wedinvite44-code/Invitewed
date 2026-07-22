@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk - WedInvite</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#0f0f23; --navy-light:#1a1a3e; --gold:#c9a96e; --gold-light:#e8d5b0; --cream:#faf7f2; --white:#fff; --gray:#8a8a9a; --gray-light:#e8e8ee; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; }
+
+.wi-auth-page { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; }
+.wi-auth-left { background:var(--navy); display:flex; flex-direction:column; justify-content:center; align-items:center; padding:60px; position:relative; overflow:hidden; }
+.wi-auth-left::before { content:''; position:absolute; top:-20%; left:-20%; width:500px; height:500px; background:radial-gradient(circle,rgba(201,169,110,.1) 0%,transparent 70%); }
+.wi-auth-left::after { content:''; position:absolute; bottom:-20%; right:-20%; width:400px; height:400px; background:radial-gradient(circle,rgba(201,169,110,.06) 0%,transparent 70%); }
+.wi-auth-brand { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--white); margin-bottom:40px; position:relative; z-index:2; text-decoration:none; }
+.wi-auth-brand span { color:var(--gold); }
+.wi-auth-phone { width:240px; height:480px; background:var(--navy-light); border-radius:36px; border:6px solid rgba(255,255,255,.08); box-shadow:0 30px 60px rgba(0,0,0,.4); overflow:hidden; position:relative; z-index:2; transform:rotate(-3deg); transition:transform .5s; }
+.wi-auth-phone:hover { transform:rotate(0deg); }
+.wi-auth-phone-screen { width:100%; height:100%; background:var(--cream); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; }
+.wi-auth-phone-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:15px; }
+.wi-auth-phone-names { font-family:'Playfair Display',serif; font-size:20px; color:var(--navy); }
+.wi-auth-phone-amp { font-style:italic; color:var(--gold); font-size:16px; margin:4px 0; }
+.wi-auth-phone-date { font-size:10px; color:var(--gray); letter-spacing:2px; margin-top:12px; }
+.wi-auth-phone-btn { background:var(--navy); color:var(--white); padding:8px 18px; border-radius:20px; font-size:10px; letter-spacing:1px; margin-top:15px; }
+
+.wi-auth-right { display:flex; flex-direction:column; justify-content:center; padding:60px 80px; background:var(--white); }
+.wi-auth-header { margin-bottom:40px; }
+.wi-auth-header h2 { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--navy); margin-bottom:8px; }
+.wi-auth-header p { font-size:15px; color:var(--gray); line-height:1.6; }
+.wi-auth-tabs { display:flex; gap:0; margin-bottom:30px; border-bottom:2px solid var(--gray-light); }
+.wi-auth-tab { flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; color:var(--gray); cursor:pointer; position:relative; transition:color .3s; letter-spacing:.5px; font-family:'Inter',sans-serif; }
+.wi-auth-tab.active { color:var(--navy); }
+.wi-auth-tab.active::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:2px; background:var(--gold); }
+
+.wi-form-group { margin-bottom:20px; }
+.wi-form-label { display:block; font-size:13px; font-weight:600; color:var(--navy); margin-bottom:8px; letter-spacing:.3px; }
+.wi-form-input { width:100%; padding:14px 18px; border:2px solid var(--gray-light); border-radius:12px; font-size:14px; font-family:'Inter',sans-serif; color:var(--navy); transition:all .3s; background:var(--white); }
+.wi-form-input:focus { outline:none; border-color:var(--gold); box-shadow:0 0 0 4px rgba(201,169,110,.1); }
+.wi-form-input::placeholder { color:#bbb; }
+.wi-form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.wi-form-checkbox { display:flex; align-items:center; gap:10px; margin-bottom:24px; }
+.wi-form-checkbox input { width:18px; height:18px; accent-color:var(--gold); cursor:pointer; }
+.wi-form-checkbox label { font-size:13px; color:var(--gray); cursor:pointer; }
+.wi-form-checkbox label a { color:var(--gold); text-decoration:none; font-weight:600; }
+.wi-forgot-link { font-size:13px; color:var(--gold); text-decoration:none; font-weight:600; transition:opacity .3s; }
+.wi-forgot-link:hover { opacity:.7; }
+.wi-btn-submit { width:100%; padding:16px; background:var(--navy); color:var(--white); border:none; border-radius:12px; font-size:14px; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all .3s; font-family:'Inter',sans-serif; }
+.wi-btn-submit:hover { background:var(--gold); color:var(--navy); transform:translateY(-2px); box-shadow:0 8px 25px rgba(201,169,110,.3); }
+.wi-auth-divider { display:flex; align-items:center; gap:16px; margin:28px 0; }
+.wi-auth-divider::before,.wi-auth-divider::after { content:''; flex:1; height:1px; background:var(--gray-light); }
+.wi-auth-divider span { font-size:12px; color:var(--gray); text-transform:uppercase; letter-spacing:2px; }
+.wi-social-login { display:flex; gap:12px; }
+.wi-social-btn { flex:1; padding:14px; border:2px solid var(--gray-light); border-radius:12px; background:var(--white); font-size:14px; font-weight:500; color:var(--navy); cursor:pointer; transition:all .3s; display:flex; align-items:center; justify-content:center; gap:8px; font-family:'Inter',sans-serif; }
+.wi-social-btn:hover { border-color:var(--gold); background:var(--cream); transform:translateY(-2px); }
+.wi-auth-footer { text-align:center; margin-top:24px; font-size:14px; color:var(--gray); }
+.wi-auth-footer a { color:var(--gold); text-decoration:none; font-weight:600; }
+.wi-auth-footer a:hover { text-decoration:underline; }
+
+@media (max-width:1024px) {
+  .wi-auth-page { grid-template-columns:1fr; }
+  .wi-auth-left { display:none; }
+  .wi-auth-right { padding:40px; }
+}
+@media (max-width:768px) {
+  .wi-auth-right { padding:30px 20px; }
+  .wi-form-row { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wi-auth-page">
+  <div class="wi-auth-left">
+    <a href="index.html" class="wi-auth-brand">Wed<span>Invite</span></a>
+    <div class="wi-auth-phone">
+      <div class="wi-auth-phone-screen">
+        <div class="wi-auth-phone-label">The Wedding of</div>
+        <div style="font-size:28px;margin:10px 0;">💑</div>
+        <div class="wi-auth-phone-names">Arya</div>
+        <div class="wi-auth-phone-amp">&</div>
+        <div class="wi-auth-phone-names">Dewi</div>
+        <div class="wi-auth-phone-date">15 Agustus 2026</div>
+        <div class="wi-auth-phone-btn">Buka Undangan</div>
+      </div>
+    </div>
+  </div>
+  <div class="wi-auth-right">
+    <div class="wi-auth-header">
+      <h2>Selamat Datang</h2>
+      <p>Masuk atau daftar untuk mulai membuat undangan digital pernikahan impian Anda.</p>
+    </div>
+    <div class="wi-auth-tabs">
+      <button class="wi-auth-tab active" onclick="switchTab('login')">Masuk</button>
+      <button class="wi-auth-tab" onclick="switchTab('register')">Daftar</button>
+    </div>
+
+    <form id="loginForm" action="dashboard.html">
+      <div class="wi-form-group">
+        <label class="wi-form-label">Email</label>
+        <input type="email" class="wi-form-input" placeholder="nama@email.com" required>
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Password</label>
+        <input type="password" class="wi-form-input" placeholder="Masukkan password" required>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <div class="wi-form-checkbox">
+          <input type="checkbox" id="remember">
+          <label for="remember">Ingat saya</label>
+        </div>
+        <a href="forgot-password.html" class="wi-forgot-link">Lupa password?</a>
+      </div>
+      <button type="submit" class="wi-btn-submit">Masuk</button>
+    </form>
+
+    <form id="registerForm" style="display:none;" action="dashboard.html">
+      <div class="wi-form-row">
+        <div class="wi-form-group">
+          <label class="wi-form-label">Nama Depan</label>
+          <input type="text" class="wi-form-input" placeholder="Nama depan" required>
+        </div>
+        <div class="wi-form-group">
+          <label class="wi-form-label">Nama Belakang</label>
+          <input type="text" class="wi-form-input" placeholder="Nama belakang" required>
+        </div>
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Email</label>
+        <input type="email" class="wi-form-input" placeholder="nama@email.com" required>
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">No. Telepon</label>
+        <input type="tel" class="wi-form-input" placeholder="+62 812 3456 7890" required>
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Password</label>
+        <input type="password" class="wi-form-input" placeholder="Minimal 8 karakter" required>
+      </div>
+      <div class="wi-form-group">
+        <label class="wi-form-label">Konfirmasi Password</label>
+        <input type="password" class="wi-form-input" placeholder="Ulangi password" required>
+      </div>
+      <div class="wi-form-checkbox">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">Saya setuju dengan <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a></label>
+      </div>
+      <button type="submit" class="wi-btn-submit">Daftar Akun</button>
+    </form>
+
+    <div class="wi-auth-divider"><span>atau</span></div>
+    <div class="wi-social-login">
+      <button class="wi-social-btn" onclick="alert('Login dengan Google akan segera hadir!')">🔍 Google</button>
+      <button class="wi-social-btn" onclick="alert('Login dengan Facebook akan segera hadir!')">📘 Facebook</button>
+    </div>
+    <div class="wi-auth-footer" id="authFooter">
+      Belum punya akun? <a href="#" onclick="switchTab('register')">Daftar sekarang</a>
+    </div>
+  </div>
+</div>
+<script>
+function switchTab(tab){
+  const tabs=document.querySelectorAll('.wi-auth-tab');
+  const loginForm=document.getElementById('loginForm');
+  const registerForm=document.getElementById('registerForm');
+  const footer=document.getElementById('authFooter');
+  tabs.forEach(t=>t.classList.remove('active'));
+  if(tab==='login'){
+    tabs[0].classList.add('active');
+    loginForm.style.display='block';
+    registerForm.style.display='none';
+    footer.innerHTML='Belum punya akun? <a href="#" onclick="switchTab('register')">Daftar sekarang</a>';
+  } else {
+    tabs[1].classList.add('active');
+    loginForm.style.display='none';
+    registerForm.style.display='block';
+    footer.innerHTML='Sudah punya akun? <a href="#" onclick="switchTab('login')">Masuk</a>';
+  }
+}
+</script>
+</body>
+</html>
