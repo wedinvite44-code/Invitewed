@@ -211,33 +211,8 @@ body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy
         <h3 class="wi-card-title">Undangan Saya</h3>
         <a href="editor.html" class="wi-card-action">Lihat Semua →</a>
       </div>
-      <div class="wi-invitation-list">
-        <div class="wi-invitation-item">
-          <a href="invitation.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;flex:1;min-width:0;">
-            <div class="wi-invitation-thumb">💍</div>
-            <div class="wi-invitation-info">
-              <div class="wi-invitation-name">Arya & Dewi Wedding</div>
-              <div class="wi-invitation-meta">Template Royal Navy · 15 Agustus 2026 · 248 tamu</div>
-            </div>
-          </a>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-            <a href="editor.html" style="padding:6px 14px;background:var(--cream);color:var(--navy);border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--gray-light);transition:all .2s;">✏️ Edit</a>
-            <span class="wi-invitation-status published">PUBLISH</span>
-          </div>
-        </div>
-        <div class="wi-invitation-item">
-          <a href="editor.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;flex:1;min-width:0;">
-            <div class="wi-invitation-thumb" style="background:#c44569;">💕</div>
-            <div class="wi-invitation-info">
-              <div class="wi-invitation-name">Budi & Sari - Engagement</div>
-              <div class="wi-invitation-meta">Template Blush Romance · 20 September 2026 · 120 tamu</div>
-            </div>
-          </a>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-            <a href="editor.html" style="padding:6px 14px;background:var(--cream);color:var(--navy);border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--gray-light);transition:all .2s;">✏️ Edit</a>
-            <span class="wi-invitation-status draft">DRAFT</span>
-          </div>
-        </div>
+      <div class="wi-invitation-list" id="invitationList">
+        <!-- Diisi oleh JavaScript -->
       </div>
     </div>
 
@@ -349,6 +324,42 @@ function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('sidebarOverlay').classList.toggle('open');
 }
+
+// Render undangan dari localStorage
+(function(){
+  const list = document.getElementById('invitationList');
+  const invitations = JSON.parse(localStorage.getItem('wedinvite_invitations') || '[]');
+
+  // Data default jika belum ada
+  const defaults = [
+    { groomNick:'Arya', brideNick:'Dewi', eventType:'Pernikahan', template:'Royal Navy', dateStr:'15 Agustus 2026', guests:248, status:'published' },
+    { groomNick:'Budi', brideNick:'Sari', eventType:'Tunangan', template:'Blush Romance', dateStr:'20 September 2026', guests:120, status:'draft' }
+  ];
+
+  const all = invitations.length > 0 ? invitations : defaults;
+
+  list.innerHTML = all.map((inv, i) => {
+    const name = inv.groomNick + ' & ' + inv.brideNick + ' - ' + inv.eventType;
+    const meta = 'Template ' + inv.template + ' · ' + (inv.dateStr || inv.date || '-') + ' · ' + (inv.guests || 0) + ' tamu';
+    const statusClass = inv.status === 'published' ? 'published' : 'draft';
+    const statusText = inv.status === 'published' ? 'PUBLISH' : 'DRAFT';
+    const thumbBg = i === 1 ? 'background:#c44569;' : '';
+    const thumbIcon = i === 1 ? '💕' : '💍';
+    return `<div class="wi-invitation-item">
+      <a href="invitation.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;flex:1;min-width:0;">
+        <div class="wi-invitation-thumb" style="${thumbBg}">${thumbIcon}</div>
+        <div class="wi-invitation-info">
+          <div class="wi-invitation-name">${name}</div>
+          <div class="wi-invitation-meta">${meta}</div>
+        </div>
+      </a>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <a href="editor.html" style="padding:6px 14px;background:var(--cream);color:var(--navy);border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--gray-light);transition:all .2s;">✏️ Edit</a>
+        <span class="wi-invitation-status ${statusClass}">${statusText}</span>
+      </div>
+    </div>`;
+  }).join('');
+})();
 
 // Toast notification
 (function(){

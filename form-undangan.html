@@ -183,15 +183,41 @@ function updatePreview(){
 
 function handleCreate(e){
   e.preventDefault();
+  const groom = document.getElementById('groomName').value.trim();
+  const bride = document.getElementById('brideName').value.trim();
+  const eventDate = document.getElementById('eventDate').value;
+  const eventType = document.getElementById('eventType').value;
+
+  // Format tanggal
+  let dateStr = '';
+  if(eventDate){
+    const d = new Date(eventDate);
+    const options = { day:'numeric', month:'long', year:'numeric' };
+    dateStr = d.toLocaleDateString('id-ID', options);
+  }
+
   const formData = {
-    eventType: document.getElementById('eventType').value,
-    groom: document.getElementById('groomName').value,
-    bride: document.getElementById('brideName').value,
+    id: Date.now(),
+    eventType: eventType,
+    groom: groom,
+    bride: bride,
+    groomNick: groom.split(' ')[0],
+    brideNick: bride.split(' ')[0],
     religion: document.getElementById('religion').value,
     wa: document.getElementById('waNumber').value,
-    date: document.getElementById('eventDate').value
+    date: eventDate,
+    dateStr: dateStr,
+    template: 'Royal Navy',
+    status: 'DRAFT',
+    guests: 0,
+    createdAt: new Date().toISOString()
   };
-  localStorage.setItem('wedinvite_draft', JSON.stringify(formData));
+
+  // Simpan ke array undangan
+  let invitations = JSON.parse(localStorage.getItem('wedinvite_invitations') || '[]');
+  invitations.unshift(formData);
+  localStorage.setItem('wedinvite_invitations', JSON.stringify(invitations));
+
   window.location.href = 'dashboard.html?new=true';
 }
 </script>
