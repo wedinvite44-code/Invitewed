@@ -212,22 +212,32 @@ body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy
         <a href="editor.html" class="wi-card-action">Lihat Semua →</a>
       </div>
       <div class="wi-invitation-list">
-        <a href="invitation.html" class="wi-invitation-item">
-          <div class="wi-invitation-thumb">💍</div>
-          <div class="wi-invitation-info">
-            <div class="wi-invitation-name">Arya & Dewi Wedding</div>
-            <div class="wi-invitation-meta">Template Royal Navy · 15 Agustus 2026 · 248 tamu</div>
+        <div class="wi-invitation-item">
+          <a href="invitation.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;flex:1;min-width:0;">
+            <div class="wi-invitation-thumb">💍</div>
+            <div class="wi-invitation-info">
+              <div class="wi-invitation-name">Arya & Dewi Wedding</div>
+              <div class="wi-invitation-meta">Template Royal Navy · 15 Agustus 2026 · 248 tamu</div>
+            </div>
+          </a>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <a href="editor.html" style="padding:6px 14px;background:var(--cream);color:var(--navy);border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--gray-light);transition:all .2s;">✏️ Edit</a>
+            <span class="wi-invitation-status published">PUBLISH</span>
           </div>
-          <span class="wi-invitation-status published">PUBLISH</span>
-        </a>
-        <a href="editor.html" class="wi-invitation-item">
-          <div class="wi-invitation-thumb" style="background:#c44569;">💕</div>
-          <div class="wi-invitation-info">
-            <div class="wi-invitation-name">Budi & Sari - Engagement</div>
-            <div class="wi-invitation-meta">Template Blush Romance · 20 September 2026 · 120 tamu</div>
+        </div>
+        <div class="wi-invitation-item">
+          <a href="editor.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;flex:1;min-width:0;">
+            <div class="wi-invitation-thumb" style="background:#c44569;">💕</div>
+            <div class="wi-invitation-info">
+              <div class="wi-invitation-name">Budi & Sari - Engagement</div>
+              <div class="wi-invitation-meta">Template Blush Romance · 20 September 2026 · 120 tamu</div>
+            </div>
+          </a>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <a href="editor.html" style="padding:6px 14px;background:var(--cream);color:var(--navy);border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--gray-light);transition:all .2s;">✏️ Edit</a>
+            <span class="wi-invitation-status draft">DRAFT</span>
           </div>
-          <span class="wi-invitation-status draft">DRAFT</span>
-        </a>
+        </div>
       </div>
     </div>
 
@@ -339,6 +349,30 @@ function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('sidebarOverlay').classList.toggle('open');
 }
+
+// Toast notification
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  let msg = '';
+  let bg = 'var(--navy)';
+  if(params.get('new') === 'true'){
+    msg = '🎉 Undangan berhasil dibuat! Klik ✏️ Edit untuk mulai mendesain.';
+  } else if(params.get('paid') === 'true'){
+    msg = '✅ Pembayaran berhasil! Undangan Anda sudah aktif.';
+    bg = 'var(--success)';
+  }
+  if(msg){
+    const toast = document.createElement('div');
+    toast.innerHTML = msg;
+    toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+bg+';color:var(--white);padding:14px 28px;border-radius:14px;font-size:14px;font-weight:500;z-index:1000;box-shadow:0 12px 40px rgba(0,0,0,.2);animation:toastSlide .4s ease;white-space:nowrap;';
+    document.body.appendChild(toast);
+    setTimeout(()=>{ toast.style.animation='toastFade .3s ease'; setTimeout(()=>toast.remove(),300); },4000);
+  }
+})();
 </script>
+<style>
+@keyframes toastSlide{from{opacity:0;transform:translateX(-50%) translateY(-20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+@keyframes toastFade{from{opacity:1;}to{opacity:0;}}
+</style>
 </body>
 </html>
