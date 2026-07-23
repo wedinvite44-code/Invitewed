@@ -120,10 +120,10 @@ body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy
         <div class="wi-editor-phone-screen">
           <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:15px;">The Wedding of</div>
           <div style="font-size:28px;margin:10px 0;">💑</div>
-          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);">Arya</div>
+          <div id="previewGroomName" style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);">Arya</div>
           <div style="font-family:'Playfair Display',serif;font-style:italic;color:var(--gold);font-size:18px;margin:4px 0;">&</div>
-          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);">Dewi</div>
-          <div style="font-size:10px;color:var(--gray);letter-spacing:2px;margin-top:15px;">15 Agustus 2026</div>
+          <div id="previewBrideName" style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);">Dewi</div>
+          <div id="previewDate" style="font-size:10px;color:var(--gray);letter-spacing:2px;margin-top:15px;">15 Agustus 2026</div>
           <div style="background:var(--navy);color:var(--white);padding:10px 24px;border-radius:20px;font-size:11px;letter-spacing:1px;margin-top:20px;">Buka Undangan</div>
         </div>
       </div>
@@ -133,19 +133,19 @@ body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy
       <div class="wi-editor-section-title">Properti</div>
       <div class="wi-form-group">
         <label class="wi-form-label">Judul Undangan</label>
-        <input type="text" class="wi-form-input" value="Arya & Dewi Wedding">
+        <input type="text" class="wi-form-input" id="editorTitle" value="Arya & Dewi Wedding" oninput="updatePreview()">
       </div>
       <div class="wi-form-group">
         <label class="wi-form-label">Nama Mempelai Pria</label>
-        <input type="text" class="wi-form-input" value="Arya Wijaya">
+        <input type="text" class="wi-form-input" id="editorGroomName" value="Arya Wijaya" oninput="updatePreview()">
       </div>
       <div class="wi-form-group">
         <label class="wi-form-label">Nama Mempelai Wanita</label>
-        <input type="text" class="wi-form-input" value="Dewi Lestari">
+        <input type="text" class="wi-form-input" id="editorBrideName" value="Dewi Lestari" oninput="updatePreview()">
       </div>
       <div class="wi-form-group">
         <label class="wi-form-label">Tanggal Pernikahan</label>
-        <input type="date" class="wi-form-input" value="2026-08-15">
+        <input type="date" class="wi-form-input" id="editorWeddingDate" value="2026-08-15" oninput="updatePreview()">
       </div>
       <div class="wi-form-group">
         <label class="wi-form-label">Warna Tema</label>
@@ -177,5 +177,74 @@ body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy
     </div>
   </div>
 </div>
+<script>
+// ===== LOAD DATA DARI FORM UNDANGAN =====
+(function loadFormData(){
+  try {
+    var stored = localStorage.getItem('wedinvite_invitations');
+    if(!stored) return;
+
+    var invitations = JSON.parse(stored);
+    if(!invitations || invitations.length === 0) return;
+
+    var data = invitations[0]; // Ambil undangan terbaru
+
+    // Isi field Nama Pria
+    var groomInput = document.getElementById('editorGroomName');
+    if(groomInput && data.groom) groomInput.value = data.groom;
+
+    // Isi field Nama Wanita
+    var brideInput = document.getElementById('editorBrideName');
+    if(brideInput && data.bride) brideInput.value = data.bride;
+
+    // Isi field Tanggal
+    var dateInput = document.getElementById('editorWeddingDate');
+    if(dateInput && data.date) dateInput.value = data.date;
+
+    // Isi field Judul
+    var titleInput = document.getElementById('editorTitle');
+    if(titleInput) {
+      var title = data.groomNick + ' & ' + data.brideNick + ' ' + data.eventType;
+      titleInput.value = title;
+    }
+
+    // Update preview
+    updatePreviewFromData(data);
+
+  } catch(e) {
+    console.error('Load form data error:', e);
+  }
+})();
+
+// ===== UPDATE PREVIEW REAL-TIME =====
+function updatePreview(){
+  var groom = document.getElementById('editorGroomName').value || 'Arya';
+  var bride = document.getElementById('editorBrideName').value || 'Dewi';
+  var dateVal = document.getElementById('editorWeddingDate').value;
+
+  var groomPreview = document.getElementById('previewGroomName');
+  var bridePreview = document.getElementById('previewBrideName');
+  var datePreview = document.getElementById('previewDate');
+
+  if(groomPreview) groomPreview.textContent = groom.split(' ')[0];
+  if(bridePreview) bridePreview.textContent = bride.split(' ')[0];
+
+  if(datePreview && dateVal){
+    var d = new Date(dateVal);
+    var months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    datePreview.textContent = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+}
+
+function updatePreviewFromData(data){
+  var groomPreview = document.getElementById('previewGroomName');
+  var bridePreview = document.getElementById('previewBrideName');
+  var datePreview = document.getElementById('previewDate');
+
+  if(groomPreview && data.groomNick) groomPreview.textContent = data.groomNick;
+  if(bridePreview && data.brideNick) bridePreview.textContent = data.brideNick;
+  if(datePreview && data.dateStr) datePreview.textContent = data.dateStr;
+}
+</script>
 </body>
 </html>
