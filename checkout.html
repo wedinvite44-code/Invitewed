@@ -60,8 +60,27 @@ body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--navy
 
 <div class="wi-checkout-header-bar">
   <a href="index.html" class="wi-checkout-logo">Wed<span>Invite</span></a>
-  <a href="subscription.html" class="wi-checkout-back">← Kembali ke Langganan</a>
+  <a href="#" id="checkoutBackLink" class="wi-checkout-back">← Kembali</a>
 </div>
+<script>
+(function(){
+  const backLink = document.getElementById('checkoutBackLink');
+  const ref = document.referrer;
+  if(ref && ref.includes('editor.html')){
+    backLink.href = 'editor.html';
+    backLink.textContent = '← Kembali ke Editor';
+  } else if(ref && ref.includes('subscription.html')){
+    backLink.href = 'subscription.html';
+    backLink.textContent = '← Kembali ke Langganan';
+  } else if(ref && ref.includes('form-undangan.html')){
+    backLink.href = 'form-undangan.html';
+    backLink.textContent = '← Kembali ke Form Undangan';
+  } else {
+    backLink.href = 'subscription.html';
+    backLink.textContent = '← Kembali ke Langganan';
+  }
+})();
+</script>
 
 <div class="wi-checkout-page">
   <div class="wi-checkout-container">
